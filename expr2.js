@@ -23,24 +23,23 @@ const o = {
   error: console.error.bind(console),
 };
 
-console.log("eval(Div(Val(99), Val(3)))");
 eval(Div(Val(99), Val(3)))(o);
 
-console.log("Left identity:   return a >>= f  ≡ f a");
+//Left identity:   return a >>= f ≡ f a
 const ret = (a) => (o) => o.value(a);
-const f = (a) => ret(a + a);
+const f = (a) => ret(a * 2);
 mb(ret(3), f)(o);
-console.log("≡");
+// ===
 f(3)(o);
 
-console.log("Right identity:  m >>= return    ≡ m");
+//Right identity:  m >>= return ≡ m
 const M = ret(6);
 mb(M, ret)(o);
-console.log("≡");
+// ===
 M(o);
 
-console.log("Associativity:   (m >>= f) >>= g ≡ m >>= (\\x -> f x >>= g)");
-const g = (a) => ret(a + a + a);
+//Associativity:   (m >>= f) >>= g ≡ m >>= (\\x -> f x >>= g)
+const g = (a) => ret(a / 2);
 mb(mb(M, f), g)(o);
-console.log("≡");
+// ===
 mb(M, (x) => mb(f(x), g))(o);
