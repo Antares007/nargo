@@ -1,6 +1,6 @@
-const atack = [];
-const A = (...args) => args.reverse().forEach((a) => atack.push(a));
-const S = () => atack.pop();
+const stack = [];
+const A = (...args) => args.forEach((a) => stack.push(a));
+const S = () => stack.pop();
 
 module.exports = { mb, A, S };
 
