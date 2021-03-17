@@ -1,90 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8" />
-    <title>Almi-express</title>
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700"
-    />
+    <title>306090 App</title>
     <style>
-      * {
-        box-sizing: border-box;
-        font-family: "Open Sans", sans-serif;
-        margin: 0;
-        padding: 0;
-      }
-      .products {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, 15rem);
-        justify-content: center;
-        grid-column-gap:1rem;
-        grid-row-gap:1rem;
-      }
-      .product {
-        overflow: hidden;
-        box-shadow: 0px 2px 8px 0px gray;
+      body {
         background-color: white;
-        text-align: center;
-        border-radius: 1rem;
-        position: relative;
-        padding: 1rem;
       }
     </style>
   </head>
   <body>
-    <div class="products">
-      <div class="product">
-        <div class="image">
-          <a href="#pp">
-            <img
-              src="https://velfoods.com/catalogo_files/mid_gatao_vv_ct_750(1).jpg"
-              border="0"
-          /></a>
-        </div>
-        <div class="description">
-          GATAO WHITE WINE , D.O. VINHO VERDE. CANTIL BOT. 750 ML
-        </div>
-        <div>CODE: <span>90005</span></div>
-        <div>
-          <input type="text" placeholder="Quantity" maxlength="5" />
-          <button>Add</button>
-        </div>
-      </div>
-      <div class="product">
-        <div class="image">
-          <a href="#pp">
-            <img
-              src="https://velfoods.com/catalogo_files/mid_gatao_vv_ct_750(1).jpg"
-              border="0"
-          /></a>
-        </div>
-        <div class="description">
-          GATAO WHITE WINE , D.O. VINHO VERDE. CANTIL BOT. 750 ML
-        </div>
-        <div>CODE: <span>90005</span></div>
-        <div>
-          <input type="text" placeholder="Quantity" maxlength="5" />
-          <button>Add</button>
-        </div>
-      </div>
-      <div class="product">
-        <div class="image">
-          <a href="#pp">
-            <img
-              src="https://velfoods.com/catalogo_files/mid_gatao_vv_ct_750(1).jpg"
-              border="0"
-          /></a>
-        </div>
-        <div class="description">
-          GATAO WHITE WINE , D.O. VINHO VERDE. CANTIL BOT. 750 ML
-        </div>
-        <div>CODE: <span>90005</span></div>
-        <div>
-          <input type="text" placeholder="Quantity" maxlength="5" />
-          <button>Add</button>
-        </div>
-      </div>
-    </div>
+    <div id="root-node"></div>
+    <script>
+      //require("/usr/lib/node_modules/@babel/register");
+      require("./ui");
+    </script>
   </body>
 </html>
