@@ -1,11 +1,11 @@
-const { mb } = require("./cb4");
+const { mb, prod } = require("./cb4");
 const Val = (a) => (o) => o.val(a);
 const Div = (a, b) => (o) => o.div(a, b);
 const evl = (o, expr) => {
   expr({
     ...o,
-    val(o) {
-      o.value();
+    val(o, a) {
+      o.value(a);
     },
     div(o, expa, expb) {
       mb(o, expa, evl, (o, a) => {
@@ -19,22 +19,25 @@ const evl = (o, expr) => {
 };
 const o = {
   value(o) {
-    console.log("v", o.s.slice(o.s.b, o.s.a));
-    o.s.a = o.s.b;
+    console.log("v", o.s.slice(0, o.s.a));
   },
   error(o) {
-    console.log("e", o.s.slice(o.s.b, o.s.a));
-    o.s.a = o.s.b;
+    console.log("e", o.s.slice(0, o.s.a));
   },
-  s: Object.assign([], { b: 0, a: 0 }),
+  s: Object.assign([], { a: 0 }),
 };
-const expr1 = (o) =>
-  o.div(
-    (o) => o.val(99),
-    (o) => o.val(3)
-  );
-//const expr1 = Div(Val(99), Val(3));
+//const expr1 = (o) =>
+//  o.div(
+//    (o) => o.val(99),
+//    (o) => o.val(3)
+//  );
+const expr1 = Div(Val(99), Val(3));
 evl(o, expr1);
+
+const n1 = (o) => o.value(3);
+const n2 = (o) => o.value(6);
+const n3 = (o) => o.value(9);
+const ne = (o) => o.error("error");
 
 //Left identity:   return a >>= f ≡ f a
 const ret = (o) => o.value();
