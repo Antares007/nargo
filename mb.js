@@ -1,8 +1,9 @@
-function rightray(oo) {
-  oo.b(oo.o);
+function rightray({ o, b }) {
+  b(o);
 }
 function mb(o, a, b) {
-  a({ ...o, right: rightray, o, b });
+  const ob = { ...o, right: rightray, o, b };
+  a(ob);
 }
 function rg(o, a, b, c, d) {
   if (a === mb) c(o, a, d, rg, d, mb, b);
@@ -12,16 +13,17 @@ const l = (...a) => console.log(...a);
 const n1 = (o) => o.right(3);
 const n2 = (o) => (o.right("α"), o.right("α", "β"), o.right("α", "β", "ο"));
 const n3 = (o) => o.right(6);
-const n4 = (o) => o.right(9);
+const n4 = (o, a) => o.right(a, a + 3);
 const ne = (o) => o.left("left");
+global.Σ = [];
+const α = 0;
 const o = {
-  right({ s }) {
-    l("right", s.slice(0, o.s.a));
+  right(o) {
+    l("right", Σ.slice(0, α));
   },
-  left({ s }) {
-    l("left", s.slice(0, o.s.a));
+  left(o) {
+    l("left", Σ.slice(0, α));
   },
-  s: Object.assign([], { a: 0 }),
 };
 function lo(o) {
   l("b", o.b.name);
