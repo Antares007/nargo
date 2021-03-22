@@ -4,8 +4,8 @@ function rightray(oo) {
 function mb(o, a, b) {
   a({ ...o, right: rightray, o, b });
 }
-function ring(o, a, b, c, d) {
-  if (a === mb) c(o, a, d, ring, d, mb, b);
+function rg(o, a, b, c, d) {
+  if (a === mb) c(o, a, d, rg, d, mb, b);
   else c(o, d, a, mb, d, mb, b);
 }
 const l = (...a) => console.log(...a);
@@ -23,14 +23,23 @@ const o = {
   },
   s: Object.assign([], { a: 0 }),
 };
-function logger(o) {
+function lo(o) {
   l("b", o.b.name);
   o.right();
   l("e", o.b.name);
 }
+function fib(o, p, c, n) {
+  if (n) fib(o, c, p + c, n - 1);
+  else o.right(p, c, c / p);
+}
+fib(o, 0, 1, 45);
+console.log("***");
+
 mb(o, n1, n2, mb, n3, mb, n4);
 console.log("***");
-ring(o, n1, n2, mb, n3, mb, n4, mb, logger);
+
+rg(o, n1, n2, mb, n3, mb, n4, mb, lo);
+console.log("***");
 
 //Left identity:   return a >>= f ≡ f a
 const ret = (o) => o.right();
@@ -47,14 +56,6 @@ M(o);
 
 //Associativity:   (m >>= f) >>= g ≡ m >>= (\\x -> f x >>= g)
 const g = (o, b) => o.right(b / 2);
-mb(
-  o,
-  (o) => {
-    mb(o, M, f);
-  },
-  g
-);
+mb(o, (o) => mb(o, M, f), g);
 // ===
-mb(o, M, (o) => {
-  mb(o, f, g);
-});
+mb(o, M, (o) => mb(o, f, g));

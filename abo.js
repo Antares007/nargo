@@ -14,7 +14,7 @@ module.exports = function (babel) {
       CallExpression(cep) {
         if (
           !cep.get("callee").isIdentifier() ||
-          cep.node.arguments.length < 2 ||
+          cep.node.abo ||
           cep.node.arguments[0].name != "o"
         )
           return;
@@ -25,17 +25,22 @@ module.exports = function (babel) {
         const oldadvance = t.identifier("α");
         const args = cep.node.arguments.slice(1).map(push);
         cep.node.arguments = cep.node.arguments.slice(0, 1);
-        const se = t.sequenceExpression([
-          t.parenthesizedExpression(
-            t.assignmentExpression("=", oldadvance, advance)
-          ),
-          ...args,
-          cep.node,
-          t.parenthesizedExpression(
-            t.assignmentExpression("=", advance, oldadvance)
-          ),
-        ]);
-        cep.replaceWith(se);
+        cep.node.abo = true;
+        if (isLast(cep))
+          cep.replaceWith(t.sequenceExpression([...args, cep.node]));
+        else
+          cep.replaceWith(
+            t.sequenceExpression([
+              t.parenthesizedExpression(
+                t.assignmentExpression("=", oldadvance, advance)
+              ),
+              ...args,
+              cep.node,
+              t.parenthesizedExpression(
+                t.assignmentExpression("=", advance, oldadvance)
+              ),
+            ])
+          );
       },
       "FunctionDeclaration|FunctionExpression|ObjectMethod"(path) {
         const po = path.get("params.0");
@@ -56,18 +61,21 @@ module.exports = function (babel) {
           const cep = p.parentPath.parentPath;
           const args = cep.node.arguments.map(push);
           cep.node.arguments = [t.identifier("o")];
-          cep.replaceWith(
-            t.sequenceExpression([
-              t.parenthesizedExpression(
-                t.assignmentExpression("=", oldadvance, advance)
-              ),
-              ...args,
-              cep.node,
-              t.parenthesizedExpression(
-                t.assignmentExpression("=", advance, oldadvance)
-              ),
-            ])
-          );
+          if (isLast(cep))
+            cep.replaceWith(t.sequenceExpression([...args, cep.node]));
+          else
+            cep.replaceWith(
+              t.sequenceExpression([
+                t.parenthesizedExpression(
+                  t.assignmentExpression("=", oldadvance, advance)
+                ),
+                ...args,
+                cep.node,
+                t.parenthesizedExpression(
+                  t.assignmentExpression("=", advance, oldadvance)
+                ),
+              ])
+            );
         });
         path.node.params
           .slice(1)
@@ -128,5 +136,19 @@ module.exports = function (babel) {
       ),
       true
     );
+  }
+  function isLast(cep) {
+    let last = true;
+    cep.find(
+      (p) =>
+        p.container.type === "ReturnStatement" ||
+        "FunctionDeclaration|ArrowFunctionExpression|FunctionExpression|ObjectMethod|Program".includes(
+          p.node.type
+        ) ||
+        !(last =
+          last &&
+          (typeof p.key !== "number" || p.container.length - 1 === p.key))
+    );
+    return last;
   }
 };
