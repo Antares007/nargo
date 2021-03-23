@@ -9,7 +9,9 @@ module.exports = function ({ types: t }) {
       Scopable(path) {
         if (!path.scope.bindings[oname] || vmap[path.scope.uid]) return;
         vmap[path.scope.uid] = 1;
-        path.scope.bindings.o.referencePaths.forEach(updatecallexpressions);
+        path.scope.bindings[oname].referencePaths.forEach(
+          updatecallexpressions
+        );
         if (
           "ArrowFunctionExpression" === path.node.type ||
           "FunctionExpression" === path.node.type ||
