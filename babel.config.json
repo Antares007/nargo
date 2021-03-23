@@ -9,5 +9,5 @@
       }
     ]
   ],
-  "plugins": ["./abo.js"]
+  "plugins": ["./src/abo.js"]
 }
