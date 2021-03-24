@@ -1,34 +1,35 @@
-const { mb, A, S } = require("./cb3");
+const { mb, A, S } = require("../show/cb3");
 
-const button = (o) => {
+const button = (oo) => {
   const d = S();
   const l = S();
-  A(l), o.text();
-  if (d) A(d - 1), counter(o);
+  A("b" + d + l), oo.log();
+  A(l), oo.text();
+  if (d) A(d - 1), counter(oo);
 };
 
-const counter = (o) => {
+const counter = (oo) => {
   const d = S();
-  A("+", d, "button", button), o.element();
-  A("-", d, "button", button), o.element();
-  A("0"), o.text();
+  A("c" + d), oo.log();
+  A("+", d, "button", button), oo.element();
+  A("-", d, "button", button), oo.element();
+  A("0"), oo.text();
 };
-const o = makepith((document.body = document.createElement("body")));
-
-const ring = (o) => {
-  console.log("a");
+const oo = makepith((document.body = document.createElement("body")));
+const ring = (oo) => {
   S()({
-    ...o,
+    ...oo,
     element() {
-      A(S(), S(), ring), o.element();
+      A(S(), S(), ring), oo.element();
+    },
+    log() {
+      console.log(S());
     },
   });
 };
-const run = (o) => S()(o);
-
-A(2, counter), run(o);
-
-function bark(o) {
+const run = (oo) => S()(oo);
+A(2, counter, ring), run(oo);
+function bark(oo) {
   const elm = S();
   const nar = S();
   nar({
@@ -43,8 +44,8 @@ function bark(o) {
 function element() {
   const nar = S();
   const tag = S();
-  const o = this;
-  const s = o.s;
+  const oo = this;
+  const s = oo.s;
   const elm = s.elm;
   const index = s.childs_count++;
   const TAG = tag.toUpperCase();
@@ -52,7 +53,7 @@ function element() {
   //for (let i = index, l = elm.childNodes.length; i < l; i++)
   //  if ((n = elm.childNodes[i]) && n.nodeName === TAG) {
   //    if (index < i) elm.insertBefore(n, elm.childNodes[index]);
-  //    n.o.b(nar, ...args);
+  //    n.oo.b(nar, ...args);
   //    return;
   //  }
   n = makepith(document.createElement(TAG));
@@ -61,8 +62,8 @@ function element() {
 }
 function text() {
   const text = S();
-  const o = this;
-  const s = o.s;
+  const oo = this;
+  const s = oo.s;
   const elm = s.elm;
   const index = s.childs_count++;
   for (let i = index, l = elm.childNodes.length; i < l; i++)
@@ -75,8 +76,11 @@ function text() {
     }
   elm.insertBefore(document.createTextNode(text), elm.childNodes[index]);
 }
+function mp(o, elm, nar) {
+  //
+}
 function makepith(elm) {
-  return (elm.o = {
+  return (elm.oo = {
     element,
     text,
     s: {

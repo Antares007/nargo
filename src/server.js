@@ -10,31 +10,31 @@ async function* generate() {
 
 function resray2(s, h, b) {
   console.log(s, h, this.req.url, b.toString());
-  this.o.res(s, h, b);
+  this.oo.res(s, h, b);
 }
-const ring = (o, req, nar, ...rest) => {
-  nar({ o, res: resray2, req }, req, ...rest);
+const ring = (oo, req, nar, ...rest) => {
+  nar({ oo, res: resray2, req }, req, ...rest);
 };
 const server = http.createServer(makeRequestListener(ring, narapp));
 
 server.listen(8080);
-function narapp(o, req) {
+function narapp(oo, req) {
   if (req.method === "GET" && req.url === "/") {
     const readable = Readable.from(generate());
-    o.res(200, { "Content-Type": "text/plain" }, readable);
+    oo.res(200, { "Content-Type": "text/plain" }, readable);
   } else {
-    o.res(404, {}, "");
+    oo.res(404, {}, "");
   }
 }
 function makeRequestListener(nar, ...rest) {
   return function requestlistener(req, res) {
-    const o = { res: resray, _server: this, _res: res };
-    nar(o, req, ...rest);
+    const oo = { res: resray, _server: this, _res: res };
+    nar(oo, req, ...rest);
   };
 }
 function resray(s, h, b) {
-  const o = this;
-  const r = o._res;
+  const oo = this;
+  const r = oo._res;
   if ("string" === typeof b) {
     r.writeHead(s, h);
     r.end(b);
