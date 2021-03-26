@@ -85,6 +85,47 @@ module.exports = function ({ types: t }) {
     }
   }
   function callexpression(callee, arguments_, pith) {
+    const spreads = arguments_
+      .filter((a) => a.type === "SpreadElement")
+      .map((s) => t.memberExpression(s.argument, t.identifier("length")));
+    if (spreads.length)
+      return t.sequenceExpression([
+        t.callExpression(
+          t.memberExpression(
+            arguments_.length === 1
+              ? arguments_[0].argument
+              : t.arrayExpression(arguments_),
+            t.identifier("forEach")
+          ),
+          [
+            t.arrowFunctionExpression(
+              [t.identifier("a"), t.identifier("i")],
+              t.parenthesizedExpression(
+                t.assignmentExpression(
+                  "=",
+                  t.memberExpression(
+                    t.identifier(sname),
+                    t.binaryExpression(
+                      "+",
+                      t.identifier(aname),
+                      t.identifier("i")
+                    ),
+                    true
+                  ),
+                  t.identifier("a")
+                )
+              )
+            ),
+          ]
+        ),
+        t.callExpression(callee, [
+          pith,
+          spreads.reduce(
+            (s, e) => t.binaryExpression("+", s, e),
+            offset(arguments_.length - spreads.length)
+          ),
+        ]),
+      ]);
     return t.sequenceExpression([
       ...arguments_.map((a, i) =>
         t.parenthesizedExpression(
