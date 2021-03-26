@@ -1,8 +1,8 @@
 const { mb } = require("./mbo");
 const emptyobject = {};
 const o = makepith((document.body = document.createElement("body")));
-ring(o, 1, counter), end(o);
-ring(o, 0, counter), end(o);
+ring(o, 2, counter), end(o);
+ring(o, 2, counter), end(o);
 
 function ring(o, s, nar) {
   const args = Σ.slice(0, α);
@@ -17,23 +17,24 @@ function test(o, s) {
 function btn(o, label) {
   o.text(label);
 }
-function onclick(o, e) {}
+function onclick(o, e, depth) {
+  console.log(o, e, depth);
+}
 function button(o, label, depth) {
   o.text(label);
-  if (depth) counter(o, depth - 1);
+  if (depth) o.element(depth - 1, "div", counter);
 }
 function counter(o, depth) {
-  o.on("click", onclick);
+  o.on(depth, "click", onclick);
   o.element("+", depth, "button", button);
   o.element("-", depth, "button", button);
   o.text("0");
 }
 
-function element(o, tag, nar) {
+function element(o, tag, nar, ...args) {
   const elm = o.s.elm;
   const index = o.s.childs_count++;
   const TAG = tag.toUpperCase();
-  const args = global.Σ.slice(0, α);
   let n;
   for (let i = index, l = elm.childNodes.length; i < l; i++)
     if (
@@ -46,7 +47,7 @@ function element(o, tag, nar) {
     }
   {
     const o = makepith(document.createElement(TAG));
-    nar(o), (o.s.nar = nar), (o.s.args = args), end(o);
+    nar(o, ...args), (o.s.nar = nar), (o.s.args = args), end(o);
     elm.insertBefore(o.s.elm, elm.childNodes[index]);
   }
 }
@@ -78,37 +79,32 @@ function end(o) {
   );
   o.s.listeners_count = 0;
   for (let ol of oldlisteners)
-    elm.removeEventListener(
-      ol.args[ol.args.length - 3],
-      ol,
-      ol.args[ol.args.length - 1]
-    ),
-      console.log("rm", ol);
+    elm.removeEventListener(ol.type, ol), console.log("rm", ol);
 }
 
 function handleEvent(event) {
-  const listener = this;
-  if (α !== 0) console.error("α", α);
-  for (let i = 0; i < listener.args - 3; i++) Σ[i] = listener.args[i];
-  listener.args[listener.args.length - 2](listener.o, listener.args - 3);
+  α = 0;
+  const { o, handler, args } = this;
+  handler(o, event, ...args);
 }
 
-function on(o) {
-  const args = Σ.slice(0, α);
+function on(o, type, handler, ...args) {
   if (typeof args[args.length - 1] === "function") args.push(emptyobject);
   const index = o.s.listeners_count++;
   const listeners = o.s.listeners;
+  let n;
   for (let i = index, l = listeners.length; i < l; i++)
-    if (eq(listeners[i].args, args)) {
+    if (
+      (n = listeners[i]) &&
+      n.type === type &&
+      n.handler === handler &&
+      eq(n.args, args)
+    ) {
       if (index < i) listeners.splice(index, 0, ...listeners.splice(i, 1));
       return;
     }
-  const listener = { o, args, handleEvent };
-  o.s.elm.addEventListener(
-    args[args.length - 3],
-    listener,
-    args[args.length - 1]
-  );
+  const listener = { o, args, type, handler, handleEvent };
+  o.s.elm.addEventListener(type, listener);
   listeners.splice(index, 0, listener);
 }
 function makepith(elm) {
