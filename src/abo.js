@@ -1,6 +1,7 @@
 module.exports = function ({ types: t }) {
   const vmap = {};
   const oname = "o";
+  const bname = "β";
   const aname = "α";
   const sname = "Σ";
   return {
@@ -17,24 +18,44 @@ module.exports = function ({ types: t }) {
           "FunctionExpression" === path.node.type ||
           "FunctionDeclaration" === path.node.type ||
           "ObjectMethod" === path.node.type
-        )
+        ) {
+          const params = path.node.params.slice(1).reverse();
+          let spread;
+          if (params.length && params[0].type === "RestElement")
+            spread = params.shift();
           path.node.params = [
             path.node.params[0],
-            t.identifier(aname),
-            ...path.node.params
-              .slice(1)
-              .reverse()
-              .map((p) =>
-                t.assignmentPattern(
-                  p,
+            t.identifier(spread ? bname : aname),
+            ...params.map((p) =>
+              t.assignmentPattern(
+                p,
+                t.memberExpression(
+                  t.identifier(sname),
+                  t.updateExpression(
+                    "--",
+                    t.identifier(spread ? bname : aname),
+                    true
+                  ),
+                  true
+                )
+              )
+            ),
+          ];
+          if (spread)
+            path.node.params.push(
+              t.assignmentPattern(
+                spread.argument,
+                t.callExpression(
                   t.memberExpression(
                     t.identifier(sname),
-                    t.updateExpression("--", t.identifier(aname), true),
-                    true
-                  )
+                    t.identifier("slice")
+                  ),
+                  [t.numericLiteral(0), t.identifier(bname)]
                 )
               ),
-          ];
+              t.assignmentPattern(t.identifier(aname), t.numericLiteral(0))
+            );
+        }
       },
     },
   };
