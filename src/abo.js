@@ -51,7 +51,8 @@ module.exports = function ({ types: t }) {
     } else if (
       "MemberExpression" === p.parent.type &&
       p.node === p.parent.object &&
-      "CallExpression" === p.parentPath.parent.type
+      "CallExpression" === p.parentPath.parent.type &&
+      p.parentPath.parent.callee === p.parent
     ) {
       const cep = p.parentPath.parentPath;
       cep.replaceWith(
