@@ -14,10 +14,16 @@ module.exports = function ({ types: t }) {
           updatecallexpressions
         );
         if (
-          "ArrowFunctionExpression" === path.node.type ||
-          "FunctionExpression" === path.node.type ||
-          "FunctionDeclaration" === path.node.type ||
-          "ObjectMethod" === path.node.type
+          ("ArrowFunctionExpression" === path.node.type ||
+            "FunctionExpression" === path.node.type ||
+            "FunctionDeclaration" === path.node.type ||
+            "ObjectMethod" === path.node.type) &&
+          path.node.params.length &&
+          (path.node.params[0].name === oname ||
+            (path.node.params[0].type === "ObjectPattern" &&
+              path.node.params[0].properties.some(
+                (p) => p.type === "ObjectProperty" && p.key.name === oname
+              )))
         ) {
           const params = path.node.params.slice(1).reverse();
           let spread;

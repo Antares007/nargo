@@ -1,5 +1,4 @@
 const { mb } = require("./mbo");
-const emptyobject = {};
 const o = makepith((document.body = document.createElement("body")));
 ring(o, 2, counter), end(o);
 ring(o, 2, counter), end(o);
@@ -83,13 +82,11 @@ function end(o) {
 }
 
 function handleEvent(event) {
-  α = 0;
   const { o, handler, args } = this;
   handler(o, event, ...args);
 }
 
 function on(o, type, handler, ...args) {
-  if (typeof args[args.length - 1] === "function") args.push(emptyobject);
   const index = o.s.listeners_count++;
   const listeners = o.s.listeners;
   let n;
