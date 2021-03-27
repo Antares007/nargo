@@ -26,9 +26,10 @@ module.exports = function ({ types: t }) {
               )))
         ) {
           const params = path.node.params.slice(1).reverse();
-          let spread;
-          if (params.length && params[0].type === "RestElement")
-            spread = params.shift();
+          const spread =
+            params.length && params[0].type === "RestElement"
+              ? params.shift()
+              : null;
           path.node.params = [
             path.node.params[0],
             t.identifier(spread ? bname : aname),
