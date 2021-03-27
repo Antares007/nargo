@@ -12,11 +12,11 @@ function rg(o, a, b, c, d) {
 module.exports = {
   mb,
   o: {
-    v(o) {
-      console.log("v", Σ.slice(0, α));
+    v(o, ...nargs) {
+      console.log("v", nargs);
     },
-    e(o) {
-      console.log("e", Σ.slice(0, α));
+    e(o, ...nargs) {
+      console.log("e", nargs);
     },
   },
   rg,
