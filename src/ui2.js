@@ -1,20 +1,20 @@
 const { mb } = require("./mbo");
 const o = makepith((document.body = document.createElement("body")));
-ring(o, 2, counter), end(o);
-ring(o, 2, counter), end(o);
+Object.assign(window, { o, end });
 
-function ring(o, s, nar) {
-  const args = Σ.slice(0, α);
-  nar(o, s);
+ring(o, 2, 0, counter), end(o);
+
+function relement({ o, nn }, tag, nar, ...nargs) {
+  o.element(...nargs, nn - 1, nar, tag, ring);
 }
-Object.assign(window, { test, o, end });
-function test(o, s) {
-  for (let i = s; i < s + 5; i++) {
-    o.element("i" + i, "button", btn);
-  }
-}
-function btn(o, label) {
-  o.text(label);
+function ring(o, s, nar, ...nargs) {
+  const oo = {
+    ...o,
+    element: relement,
+    o,
+    nn: s,
+  };
+  nar(oo, ...nargs);
 }
 function onclick(o, e, depth) {
   console.log(o, e, depth);
