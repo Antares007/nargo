@@ -2,50 +2,84 @@ const { mb } = require("./mbo");
 const o = makepith((document.body = document.createElement("body")));
 Object.assign(window, { o, end });
 
-ring(o, 2, 0, counter), end(o);
+function bark(o) {
+  ring(
+    o,
+    1,
+    (o, s, f) => {
+      console.log(f);
+    },
+    counter
+  ),
+    end(o);
+}
+bark(o, { n: 9 });
+bark(o, { n: 9 });
 
-function relement({ o, nn }, tag, nar, ...nargs) {
-  o.element(...nargs, nn - 1, nar, tag, ring);
+function relement(o, tag, nar, ...nargs) {
+  const op = o;
+  {
+    const o = op.o;
+    o.element(...nargs, op.nn, nar, tag, ring);
+  }
 }
 function ring(o, s, nar, ...nargs) {
   const oo = {
     ...o,
     element: relement,
+    reduce: s,
     o,
     nn: s,
+    nar,
   };
   nar(oo, ...nargs);
 }
-function onclick(o, e, depth) {
-  console.log(o, e, depth);
+function onclick(o, e, ...args) {
+  console.log({ o, e, args });
+  o.reduce(...args, (o, s) => {
+    o.v(s);
+  });
 }
 function button(o, label, depth) {
+  o.on(label === "+" ? +1 : -1, "click", onclick);
   o.text(label);
   if (depth) o.element(depth - 1, "div", counter);
 }
 function counter(o, depth) {
-  o.on(depth, "click", onclick);
   o.element("+", depth, "button", button);
   o.element("-", depth, "button", button);
-  o.text("0");
+  o.text("1");
+  o.reduce((o, s) => {
+    o.text(s.n + "");
+    o.v(s);
+  });
 }
-
 function element(o, tag, nar, ...args) {
   const elm = o.s.elm;
   const index = o.s.childs_count++;
   const TAG = tag.toUpperCase();
-  let n;
-  for (let i = index, l = elm.childNodes.length; i < l; i++)
-    if (
-      (n = elm.childNodes[i]) &&
-      n.nodeName === TAG &&
-      (!n.o || (n.o.s.nar === nar && n.o.s.args.every((a, i) => a === args[i])))
-    ) {
-      if (index < i) elm.insertBefore(n, elm.childNodes[index]);
-      return;
-    }
+  const l = elm.childNodes.length;
+  let n = 0;
+  let c = 0;
+  for (let i = index; i < l; i++) {
+    if (elm.childNodes[i].nodeName !== TAG) continue;
+    if (n < 1) (n = 1), (c = i);
+    if (elm.childNodes[i].o == null) break;
+    if (elm.childNodes[i].o.s.nar !== nar) continue;
+    if (n < 2) (n = 2), (c = i);
+    if (elm.childNodes[i].o.s.args.some((a, i) => a !== args[i]));
+    (n = 3), (c = i);
+    break;
+  }
   {
-    const o = makepith(document.createElement(TAG));
+    let o;
+    if (n) {
+      if (index < c) elm.insertBefore(elm.childNodes[c], elm.childNodes[index]);
+      if (n === 3) return;
+      o = elm.childNodes[index].o;
+    } else {
+      o = makepith(document.createElement(TAG));
+    }
     nar(o, ...args), (o.s.nar = nar), (o.s.args = args), end(o);
     elm.insertBefore(o.s.elm, elm.childNodes[index]);
   }
@@ -83,7 +117,7 @@ function end(o) {
 
 function handleEvent(event) {
   const { o, handler, args } = this;
-  handler(o, event, ...args);
+  handler(o, ...args, event);
 }
 
 function on(o, type, handler, ...args) {
