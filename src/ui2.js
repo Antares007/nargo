@@ -79,9 +79,9 @@ function element(o, tag, nar, ...args) {
       o = elm.childNodes[index].o;
     } else {
       o = makepith(document.createElement(TAG));
+      elm.insertBefore(o.s.elm, elm.childNodes[index]);
     }
     nar(o, ...args), (o.s.nar = nar), (o.s.args = args), end(o);
-    elm.insertBefore(o.s.elm, elm.childNodes[index]);
   }
 }
 function text(o, text) {
