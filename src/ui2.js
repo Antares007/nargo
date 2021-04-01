@@ -5,7 +5,7 @@ Object.assign(window, { o, end });
 function bark(o) {
   ring(
     o,
-    1,
+    2,
     (o, s, f) => {
       console.log(f);
     },
@@ -13,7 +13,6 @@ function bark(o) {
   ),
     end(o);
 }
-bark(o, { n: 9 });
 bark(o, { n: 9 });
 
 function relement(o, tag, nar, ...nargs) {
@@ -40,19 +39,16 @@ function onclick(o, e, ...args) {
     o.v(s);
   });
 }
+
 function button(o, label, depth) {
-  o.on(label === "+" ? +1 : -1, "click", onclick);
   o.text(label);
   if (depth) o.element(depth - 1, "div", counter);
 }
+
 function counter(o, depth) {
   o.element("+", depth, "button", button);
   o.element("-", depth, "button", button);
-  o.text("1");
-  o.reduce((o, s) => {
-    o.text(s.n + "");
-    o.v(s);
-  });
+  o.text("0");
 }
 function element(o, tag, nar, ...args) {
   const elm = o.s.elm;
