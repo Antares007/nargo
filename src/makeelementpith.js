@@ -1,32 +1,28 @@
-console.log("a");
 const { mb, o } = require("./mbo");
+
 mb(o, 2, document.body, div_counter, makeElementPith, (o) => o.v());
 debugger;
 mb(o, 1, document.body, div_counter, makeElementPith, (o) => o.v());
+
 function button(o, label, depth) {
   o.text(label);
-  if (depth) o.element(depth - 1, div_counter);
+  if (depth) o.element(depth - 1, "div", div_counter);
 }
 function div_counter(o, depth) {
-  o.element("+", depth, button);
-  o.element("-", depth, button);
+  o.element("+", depth, "button", button);
+  o.element("-", depth, "button", button);
   o.text("1");
 }
-function makeElementPith(o) {
-  mb(o, parseselector, makeElementPith_);
-}
-function makeElementPith_(o, elm, nar, tag, classList, id, ...args) {
+function makeElementPith(o, elm, nar, ...args) {
   const piths = [];
   const pith = {
     ...o,
     v: vRay,
     element: makeChildElementRay,
     text: makeChildTextRay,
-    s: { elm, tag, classList, id, args, nar, piths },
+    s: { elm, args, nar, piths },
   };
-  elm.classList.add(...classList);
   nar(pith, ...args);
-
   pith.element = element;
   pith.text = text;
   for (let l = elm.childNodes.length; l > piths.length; l--)
@@ -36,16 +32,13 @@ function makeElementPith_(o, elm, nar, tag, classList, id, ...args) {
 function vRay(o, pith) {
   o.s.piths.push(pith);
 }
-function makeChildElementRay(o) {
-  mb(o, parseselector, makeChildElementRay_);
-}
-function makeChildElementRay_(o, nar, tag, classList, id) {
+function makeChildElementRay(o, tag, nar) {
   const n = o.s.elm.childNodes[o.s.piths.length];
   const child =
     n == null || n.nodeName !== tag.toUpperCase()
       ? o.s.elm.insertBefore(document.createElement(tag), n)
       : n;
-  makeElementPith_(o, child, nar, tag, classList, id);
+  makeElementPith(o, child, nar);
 }
 function makeChildTextRay(o, text) {
   const n = o.s.elm.childNodes[o.s.piths.length];
