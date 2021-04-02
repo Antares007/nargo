@@ -1,8 +1,29 @@
 const { mb, o } = require("./mbo");
-
-mb(o, 2, document.body, div_counter, makeElementPith, (o) => o.v());
-debugger;
-mb(o, 1, document.body, div_counter, makeElementPith, (o) => o.v());
+function endring(o, nar) {
+  nar({
+    ...o,
+    element({ o }, tag, nar) {
+      o.element(nar, tag, endring), o.end();
+    },
+    o,
+  }),
+    o.end();
+}
+function ring(o, nar) {
+  nar({
+    ...o,
+    element(o, tag, nar) {
+      const op = o;
+      {
+        const o = op.o;
+        o.element(nar, tag, ring);
+      }
+    },
+    o,
+  });
+}
+makeElementPith(o, 2, div_counter, document.body, ring);
+makeElementPith(o, 1, div_counter, ring, document.body, endring);
 
 function button(o, label, depth) {
   o.text(label);
@@ -14,20 +35,20 @@ function div_counter(o, depth) {
   o.text("1");
 }
 function makeElementPith(o, elm, nar, ...args) {
-  const piths = [];
   const pith = {
     ...o,
     v: vRay,
     element: makeChildElementRay,
     text: makeChildTextRay,
-    s: { elm, args, nar, piths },
+    end: endray,
+    s: { elm, args, nar, piths: [] },
   };
   nar(pith, ...args);
-  pith.element = element;
-  pith.text = text;
-  for (let l = elm.childNodes.length; l > piths.length; l--)
-    elm.removeChild(elm.childNodes[piths.length]);
   o.v(pith);
+}
+function endray(o) {
+  for (let l = o.s.elm.childNodes.length; l > o.s.piths.length; l--)
+    o.s.elm.removeChild(o.s.elm.childNodes[o.s.piths.length]);
 }
 function vRay(o, pith) {
   o.s.piths.push(pith);
