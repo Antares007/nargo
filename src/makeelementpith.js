@@ -23,12 +23,14 @@ function ring(o, nar) {
   });
 }
 makeElementPith(o, 2, div_counter, document.body, ring);
+
 function bark(o) {
   mb(o, ring, document.body, endring, makeElementPith, (o, ...args) => {
     console.log(...args);
     o.v();
   });
 }
+
 bark(o, 1, div_counter);
 
 function button(o, label, depth) {
