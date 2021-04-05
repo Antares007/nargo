@@ -1,29 +1,56 @@
 //type StreamF<A> = ((Next<A> | Error | End | D.Disposable) => void) => void;
 (global.Σ = []), (global.α = 0);
+function disposefa(oo) {
+  oo.f(oo.a);
+}
+function disposablefa(f, a) {
+  return { f, a, dispose: disposefa };
+}
 function dispose(o) {
-  for (let { f, t, args } of o.disposables) f.apply(t, args);
+  console.log(o);
+  const op = o;
+  {
+    for (let o of op.disposables) o.dispose();
+  }
 }
 function onInterval(o) {
   o.next(1);
 }
 function snar(o, period) {
-  const id = setInterval(onInterval, period, o, 0);
-  const disposable = { t: null, f: clearInterval, args: [id] };
-  o.disposable(disposable);
+  o.disposable(
+    disposablefa(clearInterval, setInterval(onInterval, period, o, 0))
+  );
 }
-const o = { next, error, end, disposable, disposables: [] };
-map(o, 100, (o, a) => o.next(a + 1), snar);
-pmap(
-  o,
-  100,
-  {
-    next({ o }, a) {
-      o.next(a + 2);
+function take(o, count, nar) {
+  const pith = {
+    ...o,
+    next(o) {
+      const op = o;
+      if (op.count--) {
+        const o = op.o;
+        o.next();
+      } else {
+        dispose(o);
+      }
     },
-  },
-  snar
-);
-setTimeout(dispose, 1000, o);
+    disposable: disposableRay,
+    disposables: [],
+    o,
+    count,
+  };
+  nar(pith);
+  o.disposable({ f: dispose, args: [pith] });
+}
+function disposableRay(o, d) {
+  o.disposables.push(d);
+}
+function spith(next, error, end) {
+  return { next, error, end, disposable, disposables: [] };
+}
+const o = { next, error, end, disposable, disposables: [], dispose };
+map(o, 100, (o, a) => o.next(a + 1), snar);
+
+setTimeout(() => o.dispose(), 1000);
 
 function mapnext({ o, f }) {
   f(o);

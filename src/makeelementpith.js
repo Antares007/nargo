@@ -3,7 +3,7 @@ function endring(o, nar) {
   nar({
     ...o,
     element({ o }, tag, nar) {
-      o.element(nar, tag, endring), o.end();
+      o.element(nar, tag, endring);
     },
     o,
   }),
@@ -19,28 +19,31 @@ function ring(o, nar) {
         o.element(nar, tag, ring);
       }
     },
+    text({ o }, text) {
+      o.text(text);
+    },
+    end({ o }) {
+      o.end();
+    },
     o,
   });
 }
-makeElementPith(o, 2, div_counter, document.body, ring);
-
-function bark(o) {
-  mb(o, ring, document.body, endring, makeElementPith, (o, ...args) => {
-    console.log(...args);
-    o.v();
-  });
-}
-
-bark(o, 1, div_counter);
+makeElementPith(o, 1, document.body, div_counter);
 
 function button(o, label, depth) {
   o.text(label);
   if (depth) o.element(depth - 1, "div", div_counter);
 }
 function div_counter(o, depth) {
+  //if (!window.a)
+  //  setTimeout(() => {
+  //    debugger;
+  //    endring(o, 2, div_counter);
+  //  }, 2000);
+  //window.a = 1;
   o.element("+", depth, "button", button);
   o.element("-", depth, "button", button);
-  o.text("1");
+  o.text(depth + "");
 }
 function makeElementPith(o, elm, nar, ...args) {
   const pith = {
@@ -49,20 +52,23 @@ function makeElementPith(o, elm, nar, ...args) {
     element: makeChildElementRay,
     text: makeChildTextRay,
     end: endray,
-    s: { elm, args, nar, piths: [] },
+    s: { elm, args, nar, piths: [], childs_count: 0 },
   };
   nar(pith, ...args);
+  pith.element = element;
+  pith.text = text;
   o.v(pith);
 }
 function endray(o) {
-  for (let l = o.s.elm.childNodes.length; l > o.s.piths.length; l--)
-    o.s.elm.removeChild(o.s.elm.childNodes[o.s.piths.length]);
+  for (let l = o.s.elm.childNodes.length; l > o.s.childs_count; l--)
+    o.s.elm.removeChild(o.s.elm.childNodes[o.s.childs_count]);
+  o.s.childs_count = 0;
 }
 function vRay(o, pith) {
-  o.s.piths.push(pith);
+  o.s.piths.splice(o.s.childs_count++, 0, pith);
 }
 function makeChildElementRay(o, tag, nar) {
-  const n = o.s.elm.childNodes[o.s.piths.length];
+  const n = o.s.elm.childNodes[o.s.childs_count];
   const child =
     n == null || n.nodeName !== tag.toUpperCase()
       ? o.s.elm.insertBefore(document.createElement(tag), n)
@@ -70,7 +76,7 @@ function makeChildElementRay(o, tag, nar) {
   makeElementPith(o, child, nar);
 }
 function makeChildTextRay(o, text) {
-  const n = o.s.elm.childNodes[o.s.piths.length];
+  const n = o.s.elm.childNodes[o.s.childs_count];
   if (n == null || n.nodeType !== 3 || n.textContent !== text)
     o.s.elm.insertBefore(document.createTextNode(text), n);
   o.v(text);
