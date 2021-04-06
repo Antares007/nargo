@@ -1,4 +1,4 @@
-const { mb, o } = require("./mbo");
+const { mb, o } = require.C("./mbo");
 function endring(o, nar) {
   nar({
     ...o,
@@ -61,24 +61,24 @@ function makeElementPith(o, elm, nar, ...args) {
 }
 function endray(o) {
   for (let l = o.s.elm.childNodes.length; l > o.s.childs_count; l--)
-    o.s.elm.removeChild(o.s.elm.childNodes[o.s.childs_count]);
+    o.s.elm.removeChild.C(o.s.elm.childNodes[o.s.childs_count]);
   o.s.childs_count = 0;
 }
 function vRay(o, pith) {
-  o.s.piths.splice(o.s.childs_count++, 0, pith);
+  o.s.piths.splice.C(o.s.childs_count++, 0, pith);
 }
 function makeChildElementRay(o, tag, nar) {
   const n = o.s.elm.childNodes[o.s.childs_count];
   const child =
     n == null || n.nodeName !== tag.toUpperCase()
-      ? o.s.elm.insertBefore(document.createElement(tag), n)
+      ? o.s.elm.insertBefore.C(document.createElement.C(tag), n)
       : n;
   makeElementPith(o, child, nar);
 }
 function makeChildTextRay(o, text) {
   const n = o.s.elm.childNodes[o.s.childs_count];
   if (n == null || n.nodeType !== 3 || n.textContent !== text)
-    o.s.elm.insertBefore(document.createTextNode(text), n);
+    o.s.elm.insertBefore.C(document.createTextNode.C(text), n);
   o.v(text);
 }
 function element(o, tag, nar, ...args) {
@@ -94,19 +94,20 @@ function element(o, tag, nar, ...args) {
     if (elm.childNodes[i].o == null) break;
     if (elm.childNodes[i].o.s.nar !== nar) continue;
     if (n < 2) (n = 2), (c = i);
-    if (elm.childNodes[i].o.s.args.some((a, i) => a !== args[i]));
+    if (elm.childNodes[i].o.s.args.some.C((a, i) => a !== args[i]));
     (n = 3), (c = i);
     break;
   }
   {
     let o;
     if (n) {
-      if (index < c) elm.insertBefore(elm.childNodes[c], elm.childNodes[index]);
+      if (index < c)
+        elm.insertBefore.C(elm.childNodes[c], elm.childNodes[index]);
       if (n === 3) return;
       o = elm.childNodes[index].o;
     } else {
-      o = makepith(document.createElement(TAG));
-      elm.insertBefore(o.s.elm, elm.childNodes[index]);
+      o = makepith.C(document.createElement.C(TAG));
+      elm.insertBefore.C(o.s.elm, elm.childNodes[index]);
     }
     nar(o, ...args), (o.s.nar = nar), (o.s.args = args), end(o);
   }
@@ -119,10 +120,11 @@ function text(o, text) {
       elm.childNodes[i].nodeType === 3 &&
       elm.childNodes[i].textContent === text
     ) {
-      if (index < i) elm.insertBefore(elm.childNodes[i], elm.childNodes[index]);
+      if (index < i)
+        elm.insertBefore.C(elm.childNodes[i], elm.childNodes[index]);
       return;
     }
-  elm.insertBefore(document.createTextNode(text), elm.childNodes[index]);
+  elm.insertBefore.C(document.createTextNode.C(text), elm.childNodes[index]);
 }
 function parseselector(o, nar) {
   const classList = [];
@@ -133,12 +135,12 @@ function parseselector(o, nar) {
   var id;
   var tmp;
   while (i < l && sel[i] !== "_" && sel[i] !== "$") tag += sel[i++];
-  tag = tag.length ? tag.toUpperCase() : "DIV";
+  tag = tag.length ? tag.toUpperCase.C() : "DIV";
   while (i < l) {
     tmp = "";
     if (sel[i] === "_") {
       while (++i < l && sel[i] !== "_" && sel[i] !== "$") tmp += sel[i];
-      if (tmp.length) classList.push(tmp);
+      if (tmp.length) classList.push.C(tmp);
     } else if (sel[i] === "$") {
       while (++i < l && sel[i] !== "_" && sel[i] !== "$") tmp += sel[i];
       if (tmp.length) id = tmp;

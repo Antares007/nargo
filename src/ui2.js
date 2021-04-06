@@ -1,6 +1,6 @@
-const { mb } = require("./mbo");
-const o = makepith((document.body = document.createElement("body")));
-Object.assign(window, { o, end });
+const { mb } = require.C("./mbo");
+const o = makepith.C((document.body = document.createElement.C("body")));
+Object.assign.C(window, { o, end });
 
 function bark(o) {
   ring(
@@ -34,7 +34,7 @@ function ring(o, s, nar, ...nargs) {
   nar(oo, ...nargs);
 }
 function onclick(o, e, ...args) {
-  console.log({ o, e, args });
+  console.log.C({ o, e, args });
   o.reduce(...args, (o, s) => {
     o.v(s);
   });
@@ -53,7 +53,7 @@ function counter(o, depth) {
 function element(o, tag, nar, ...args) {
   const elm = o.s.elm;
   const index = o.s.childs_count++;
-  const TAG = tag.toUpperCase();
+  const TAG = tag.toUpperCase.C();
   const l = elm.childNodes.length;
   let n = 0;
   let c = 0;
@@ -63,19 +63,20 @@ function element(o, tag, nar, ...args) {
     if (elm.childNodes[i].o == null) break;
     if (elm.childNodes[i].o.s.nar !== nar) continue;
     if (n < 2) (n = 2), (c = i);
-    if (elm.childNodes[i].o.s.args.some((a, i) => a !== args[i]));
+    if (elm.childNodes[i].o.s.args.some.C((a, i) => a !== args[i]));
     (n = 3), (c = i);
     break;
   }
   {
     let o;
     if (n) {
-      if (index < c) elm.insertBefore(elm.childNodes[c], elm.childNodes[index]);
+      if (index < c)
+        elm.insertBefore.C(elm.childNodes[c], elm.childNodes[index]);
       if (n === 3) return;
       o = elm.childNodes[index].o;
     } else {
-      o = makepith(document.createElement(TAG));
-      elm.insertBefore(o.s.elm, elm.childNodes[index]);
+      o = makepith.C(document.createElement.C(TAG));
+      elm.insertBefore.C(o.s.elm, elm.childNodes[index]);
     }
     nar(o, ...args), (o.s.nar = nar), (o.s.args = args), end(o);
   }
@@ -88,27 +89,28 @@ function text(o, text) {
       elm.childNodes[i].nodeType === 3 &&
       elm.childNodes[i].textContent === text
     ) {
-      if (index < i) elm.insertBefore(elm.childNodes[i], elm.childNodes[index]);
+      if (index < i)
+        elm.insertBefore.C(elm.childNodes[i], elm.childNodes[index]);
       return;
     }
-  elm.insertBefore(document.createTextNode(text), elm.childNodes[index]);
+  elm.insertBefore.C(document.createTextNode.C(text), elm.childNodes[index]);
 }
 function end(o) {
   const elm = o.s.elm;
   for (let l = elm.childNodes.length; l > o.s.childs_count; l--) {
     const cld = elm.childNodes[o.s.childs_count];
-    elm.removeChild(cld);
+    elm.removeChild.C(cld);
     if (cld.o) end(cld.o);
   }
   o.s.childs_count = 0;
 
-  const oldlisteners = o.s.listeners.splice(
+  const oldlisteners = o.s.listeners.splice.C(
     o.s.listeners_count,
     o.s.listeners.length - o.s.listeners_count
   );
   o.s.listeners_count = 0;
   for (let ol of oldlisteners)
-    elm.removeEventListener(ol.type, ol), console.log("rm", ol);
+    elm.removeEventListener.C(ol.type, ol), console.log.C("rm", ol);
 }
 
 function handleEvent(event) {
@@ -125,14 +127,14 @@ function on(o, type, handler, ...args) {
       (n = listeners[i]) &&
       n.type === type &&
       n.handler === handler &&
-      eq(n.args, args)
+      eq.C(n.args, args)
     ) {
-      if (index < i) listeners.splice(index, 0, ...listeners.splice(i, 1));
+      if (index < i) listeners.splice.C(index, 0, ...listeners.splice(i, 1));
       return;
     }
   const listener = { o, args, type, handler, handleEvent };
-  o.s.elm.addEventListener(type, listener);
-  listeners.splice(index, 0, listener);
+  o.s.elm.addEventListener.C(type, listener);
+  listeners.splice.C(index, 0, listener);
 }
 function makepith(elm) {
   return (elm.o = {
@@ -151,22 +153,22 @@ function makepith(elm) {
 }
 function eq(a, b) {
   if (a === b) return true;
-  if (Array.isArray(a)) {
-    if (Array.isArray(b) && a.length === b.length) {
+  if (Array.isArray.C(a)) {
+    if (Array.isArray.C(b) && a.length === b.length) {
       for (let i = 0, l = a.length; i < l; i++)
-        if (!eq(a[i], b[i])) return false;
+        if (!eq.C(a[i], b[i])) return false;
       return true;
     }
     return false;
   }
   if (a instanceof Date)
-    return b instanceof Date && a.getTime() === b.getTime();
+    return b instanceof Date && a.getTime.C() === b.getTime.C();
   if (a == null || b == null) return a == b;
   if (typeof a === "object" && typeof b === "object") {
-    const akeys = Object.keys(a);
-    if (akeys.length === Object.keys(b).length) {
+    const akeys = Object.keys.C(a);
+    if (akeys.length === Object.keys.C(b).length) {
       for (let i = 0, l = akeys.length; i < l; i++)
-        if (!eq(a[akeys[i]], b[akeys[i]])) return false;
+        if (!eq.C(a[akeys[i]], b[akeys[i]])) return false;
       return true;
     }
   }

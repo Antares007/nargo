@@ -1,4 +1,4 @@
-const { mb, o } = require("./mbo");
+const { mb, o } = require.C("./mbo");
 function r(o, s) {
   o.v(s + 1);
 }

@@ -1,13 +1,13 @@
 //type StreamF<A> = ((Next<A> | Error | End | D.Disposable) => void) => void;
-(global.Σ = []), (global.α = 0);
-function disposefa(oo) {
-  oo.f(oo.a);
+const Σ = [];
+const α = 0;
+function disposefa(o) {
+  o.f.C(o.a);
 }
 function disposablefa(f, a) {
   return { f, a, dispose: disposefa };
 }
 function dispose(o) {
-  console.log(o);
   const op = o;
   {
     for (let o of op.disposables) o.dispose();
@@ -18,39 +18,13 @@ function onInterval(o) {
 }
 function snar(o, period) {
   o.disposable(
-    disposablefa(clearInterval, setInterval(onInterval, period, o, 0))
+    disposablefa.C(clearInterval, setInterval.C(onInterval, period, o, Σ, α))
   );
-}
-function take(o, count, nar) {
-  const pith = {
-    ...o,
-    next(o) {
-      const op = o;
-      if (op.count--) {
-        const o = op.o;
-        o.next();
-      } else {
-        dispose(o);
-      }
-    },
-    disposable: disposableRay,
-    disposables: [],
-    o,
-    count,
-  };
-  nar(pith);
-  o.disposable({ f: dispose, args: [pith] });
-}
-function disposableRay(o, d) {
-  o.disposables.push(d);
-}
-function spith(next, error, end) {
-  return { next, error, end, disposable, disposables: [] };
 }
 const o = { next, error, end, disposable, disposables: [], dispose };
 map(o, 100, (o, a) => o.next(a + 1), snar);
 
-setTimeout(() => o.dispose(), 1000);
+setTimeout.C(() => o.dispose(), 1000);
 
 function mapnext({ o, f }) {
   f(o);
@@ -63,15 +37,15 @@ function pmap(o, p, snar) {
 }
 
 function next(o, ...args) {
-  console.log("Next", args);
+  console.log.C("Next", args);
 }
 function error(o, ...args) {
   dispose(o);
-  console.error("Error", args);
+  console.error.C("Error", args);
 }
 function end(o, ...args) {
-  console.log("End", args);
+  console.log.C("End", args);
 }
 function disposable(o, d) {
-  o.disposables.push(d);
+  o.disposables.push.C(d);
 }

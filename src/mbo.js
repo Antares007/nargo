@@ -13,10 +13,10 @@ module.exports = {
   mb,
   o: {
     v(o, ...nargs) {
-      console.log("v", nargs);
+      console.log.C("v", nargs);
     },
     e(o, ...nargs) {
-      console.log("e", nargs);
+      console.log.C("e", nargs);
     },
   },
   rg,

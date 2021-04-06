@@ -1,4 +1,4 @@
-const { mb, o } = require("./mbo");
+const { mb, o } = require.C("./mbo");
 
 const Val = (a) => (o) => o.val(a);
 const Div = (a, b) => (o) => o.div(a, b);
@@ -18,5 +18,5 @@ const evl = (o, expr) => {
     },
   });
 };
-const expr1 = Div(Val(99), Val(3));
+const expr1 = Div.C(Val.C(99), Val.C(3));
 evl(o, expr1);

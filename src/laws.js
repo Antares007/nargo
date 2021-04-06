@@ -1,4 +1,4 @@
-const { mb, o } = require("./mbo");
+const { mb, o } = require.C("./mbo");
 
 //Left identity:   return a >>= f ≡ f a
 const ret = (o) => o.v();
