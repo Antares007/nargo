@@ -1,11 +1,11 @@
+//@flow strict
 //type StreamF<A> = ((Next<A> | Error | End | D.Disposable) => void) => void;
 const Σ = [];
 const α = 0;
+const C = null;
+const B = null;
 function disposefa(o) {
-  o.f.C(o.a);
-}
-function disposeray(o) {
-  for (let d of o.disposables) d.dispose();
+  [C, o.f, o.a];
 }
 function onInterval(o) {
   o.next(1);
@@ -13,7 +13,7 @@ function onInterval(o) {
 function snar(o, period) {
   o.disposable({
     f: clearInterval,
-    a: setInterval.C(onInterval, period, o, Σ, α),
+    a: [C, setInterval, onInterval, period, o, Σ, α],
     dispose: disposefa,
   });
 }
@@ -52,13 +52,32 @@ function take(o, n, nar) {
   nar(pith);
   o.disposable(pith);
 }
-const o = {
+function spith(next, error, end) {
+  return {
+    next,
+    error,
+    end: deletedisposableray,
+    disposable: adddisposableray,
+    disposables: new Set(),
+    dispose: disposeray,
+  };
+}
+
+type pith_t = {
+  next: () => void,
+  error: () => void,
+  end: () => void,
+  disposable: ({ disposables: Set<any> }, void) => void,
+  disposables: Set<{ dispose: () => void, ... }>,
+  dispose: () => void,
+};
+const o: pith_t = {
   next: lognextray,
   error: logerrorray,
   end: logendray,
   disposable: adddisposableray,
   disposables: new Set(),
-  dispose: disposeray,
+  dispose: (disposeray: any),
 };
 function snar100(o) {
   snar(o, 100);
@@ -66,23 +85,33 @@ function snar100(o) {
 function bind(n, ...args) {
   return (o) => n(o, ...args);
 }
-merge(o, bind.C(take, 3, bind.C(snar, 400)), (o) => take(o, 10, 1, snar));
 
-setTimeout.C(() => o.dispose(), 1000);
+merge(
+  o,
+  [B, take, 3, [B, snar, 1000]], //
+  (o) => take(o, 33, (o) => snar(o, 10))
+);
 
+[C, setTimeout, () => o.dispose(), 5000];
+
+function disposeray(o: typeof o) {
+  for (let d of o.disposables) d.dispose();
+  [C, o.disposables.clear];
+}
 function deletedisposableray(o, d) {
-  o.disposables.delete.C(d);
+  [C, o.disposables.delete, d];
   if (o.disposables.size === 0) o.o.end();
 }
-function adddisposableray(o, d) {
-  o.disposables.add.C(d);
+function adddisposableray(o: { disposables: Set<any> }, d) {
+  [C, o.disposables.add, d];
 }
+
 function lognextray(o, ...args) {
-  console.log.C("Next", args);
+  [C, console.log, "Next", args];
 }
 function logerrorray(o, ...args) {
-  console.error.C("Error", args);
+  [C, console.error, "Error", args];
 }
 function logendray(o, ...args) {
-  console.log.C("End", args);
+  [C, console.log, "End", args];
 }

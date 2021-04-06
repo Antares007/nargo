@@ -7,6 +7,24 @@ module.exports = function ({ types: t }) {
   return {
     name: "abo-transform",
     visitor: {
+      ArrayExpression(path) {
+        if (path.node.elements.length > 2) {
+          if (path.node.elements[0].name === "C")
+            path.replaceWith(
+              callExpression(path.node.elements[1], path.node.elements.slice(2))
+            );
+          else if (path.node.elements[0].name === "B")
+            path.replaceWith(
+              t.arrowFunctionExpression(
+                [t.identifier("o")],
+                t.callExpression(path.node.elements[1], [
+                  t.identifier(oname),
+                  ...path.node.elements.slice(2),
+                ])
+              )
+            );
+        }
+      },
       "ArrowFunctionExpression|FunctionExpression|FunctionDeclaration|ObjectMethod"(
         path
       ) {
