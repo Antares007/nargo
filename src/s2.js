@@ -7,7 +7,9 @@ function merge(...ooo) {
       else o.c++;
     },
     next(o) {},
-    stop(o) {},
+    stop(o) {
+      if (--o.c === 1) o.o.stop();
+    },
     o: null,
     c: 0,
   };
@@ -20,23 +22,26 @@ function merge(...ooo) {
       n: "p",
       start(o, oo) {
         oo.start(o);
+        [C, setTimeout, () => ([C, console.log, oo.c], oo.stop()), 1000];
       },
       next(o) {},
       stop(o) {},
     };
 
-    const cons = {
-      n: "cons",
+    const log = {
+      n: "log",
       start(o, oo) {
         [C, console.log, "C", oo.t, oo.c];
       },
       next(o, ...args) {
-        [C, console.log, args];
+        [C, console.log, "N", args];
       },
-      stop(o) {},
+      stop(o, oo) {
+        [C, console.log, "S", oo];
+      },
     };
     const m = [C, merge, prod, prod, prod, prod, prod, prod];
-    m.start(cons);
+    m.start(log);
   },
   {},
   [],
