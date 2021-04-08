@@ -8,18 +8,27 @@ module.exports = function ({ types: t }) {
     name: "abo-transform",
     visitor: {
       ArrayExpression(path) {
-        if (path.node.elements.length > 2) {
-          if (path.node.elements[0].name === "C")
+        const args = path.node.elements;
+        if (args.length !== 0) {
+          if (args[0].name === "Clog")
             path.replaceWith(
-              callExpression(path.node.elements[1], path.node.elements.slice(2))
+              callExpression(
+                t.memberExpression(
+                  t.identifier("console"),
+                  t.identifier("log")
+                ),
+                args.slice(1)
+              )
             );
-          else if (path.node.elements[0].name === "B")
+          else if (args[0].name === "C")
+            path.replaceWith(callExpression(args[1], args.slice(2)));
+          else if (args[0].name === "B")
             path.replaceWith(
               t.arrowFunctionExpression(
                 [t.identifier("o")],
-                t.callExpression(path.node.elements[1], [
+                t.callExpression(args[1], [
                   t.identifier(oname),
-                  ...path.node.elements.slice(2),
+                  ...args.slice(2),
                 ])
               )
             );
