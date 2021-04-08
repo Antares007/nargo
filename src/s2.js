@@ -6,9 +6,11 @@ function merge(...ooo) {
       else if (o.c === ooo.length) o.c++, o.o.start(o);
       else o.c++;
     },
-    next(o) {},
+    next(o) {
+      [C, ooo.forEach, (oc) => oc.next(o)];
+    },
     stop(o) {
-      if (--o.c === 1) o.o.stop();
+      if (o.c-- === 2) o.c--, o.o.stop(o);
     },
     o: null,
     c: 0,
@@ -22,9 +24,11 @@ function merge(...ooo) {
       n: "p",
       start(o, oo) {
         oo.start(o);
-        [C, setTimeout, () => ([C, console.log, oo.c], oo.stop()), 1000];
+        [C, setTimeout, () => oo.stop(), 1000];
       },
-      next(o) {},
+      next(o, oo) {
+        [C, console.log, "P", oo.t];
+      },
       stop(o) {},
     };
 
@@ -32,6 +36,7 @@ function merge(...ooo) {
       n: "log",
       start(o, oo) {
         [C, console.log, "C", oo.t, oo.c];
+        [C, setTimeout, () => oo.next(), 100];
       },
       next(o, ...args) {
         [C, console.log, "N", args];
@@ -40,7 +45,10 @@ function merge(...ooo) {
         [C, console.log, "S", oo];
       },
     };
+
     const m = [C, merge, prod, prod, prod, prod, prod, prod];
+
+    [C, console.log, m];
     m.start(log);
   },
   {},
