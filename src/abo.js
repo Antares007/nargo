@@ -9,30 +9,23 @@ module.exports = function ({ types: t }) {
     visitor: {
       ArrayExpression(path) {
         const args = path.node.elements;
-        if (args.length !== 0) {
-          if (args[0].name === "Clog")
-            path.replaceWith(
-              callExpression(
-                t.memberExpression(
-                  t.identifier("console"),
-                  t.identifier("log")
-                ),
-                args.slice(1)
-              )
-            );
-          else if (args[0].name === "C")
-            path.replaceWith(callExpression(args[1], args.slice(2)));
-          else if (args[0].name === "B")
-            path.replaceWith(
-              t.arrowFunctionExpression(
-                [t.identifier("o")],
-                t.callExpression(args[1], [
-                  t.identifier(oname),
-                  ...args.slice(2),
-                ])
-              )
-            );
-        }
+        if (args.length == 0) return;
+        if (args[0].name === "Clog")
+          path.replaceWith(
+            callExpression(
+              t.memberExpression(t.identifier("console"), t.identifier("log")),
+              args.slice(1)
+            )
+          );
+        else if (args[0].name === "C")
+          path.replaceWith(callExpression(args[1], args.slice(2)));
+        else if (args[0].name === "B")
+          path.replaceWith(
+            t.arrowFunctionExpression(
+              [t.identifier("o")],
+              t.callExpression(args[1], [t.identifier(oname), ...args.slice(2)])
+            )
+          );
       },
       "ArrowFunctionExpression|FunctionExpression|FunctionDeclaration|ObjectMethod"(
         path
@@ -84,33 +77,31 @@ module.exports = function ({ types: t }) {
           );
       },
       CallExpression(cep) {
-        if (vset.has(cep.node)) return;
-        if (cep.node.callee.type === "MemberExpression") {
-          if (
-            cep.node.callee.property.type === "Identifier" &&
-            cep.node.callee.property.name === "C"
-          ) {
-            cep.replaceWith(
-              callExpression(cep.node.callee.object, cep.node.arguments)
-            );
-          } else {
+        if (!vset.has(cep.node))
+          if (cep.node.callee.type === "MemberExpression")
+            if (
+              cep.node.callee.property.type === "Identifier" &&
+              cep.node.callee.property.name === "C"
+            )
+              cep.replaceWith(
+                callExpression(cep.node.callee.object, cep.node.arguments)
+              );
+            else
+              cep.replaceWith(
+                abocallexpression(
+                  cep.node.callee,
+                  cep.node.arguments,
+                  cep.node.callee.object
+                )
+              );
+          else if (cep.node.callee.type === "Identifier")
             cep.replaceWith(
               abocallexpression(
                 cep.node.callee,
-                cep.node.arguments,
-                cep.node.callee.object
+                cep.node.arguments.slice(1),
+                cep.node.arguments[0]
               )
             );
-          }
-        } else if (cep.node.callee.type === "Identifier") {
-          cep.replaceWith(
-            abocallexpression(
-              cep.node.callee,
-              cep.node.arguments.slice(1),
-              cep.node.arguments[0]
-            )
-          );
-        }
       },
     },
   };
