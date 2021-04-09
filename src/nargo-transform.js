@@ -5,7 +5,7 @@ module.exports = function ({ types: t }) {
   const aname = "α";
   const sname = "Σ";
   return {
-    name: "abo-transform",
+    name: "nargo-transform",
     visitor: {
       ArrayExpression(path) {
         const args = path.node.elements;
@@ -88,7 +88,7 @@ module.exports = function ({ types: t }) {
               );
             else
               cep.replaceWith(
-                abocallexpression(
+                nargocallsequence(
                   cep.node.callee,
                   cep.node.arguments,
                   cep.node.callee.object
@@ -96,7 +96,7 @@ module.exports = function ({ types: t }) {
               );
           else if (cep.node.callee.type === "Identifier")
             cep.replaceWith(
-              abocallexpression(
+              nargocallsequence(
                 cep.node.callee,
                 cep.node.arguments.slice(1),
                 cep.node.arguments[0]
@@ -110,7 +110,7 @@ module.exports = function ({ types: t }) {
     vset.add(n);
     return n;
   }
-  function abocallexpression(callee, arguments_, pith) {
+  function nargocallsequence(callee, arguments_, pith) {
     const spreads = arguments_
       .filter((a) => a.type === "SpreadElement")
       .map((s) => t.memberExpression(s.argument, t.identifier("length")));

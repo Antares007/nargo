@@ -33,18 +33,7 @@ function example(o) {
   // ===
   mb(o, M, [B, mb, f, g]);
 }
-[C, example, o, [], 0];
-// std output:
-//
-// v [ 6 ]
-// v [ 6 ]
-// v [ 6 ]
-// v [ 6 ]
-// v [ 6 ]
-// v [ 6 ]
-//
-// [Process exited 0]
-
+//[C, example, o, [], 0];
 function rg(o, a, b, c, d) {
   if (a === mb) c(o, a, d, rg, d, mb, b);
   else c(o, d, a, mb, d, mb, b);

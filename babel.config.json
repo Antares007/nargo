@@ -11,5 +11,5 @@
     "@babel/preset-flow"
   ],
 
-  "plugins": ["./src/abo.js"]
+  "plugins": ["./src/nargo-transform.js"]
 }
