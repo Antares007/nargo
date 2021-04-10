@@ -1,25 +1,30 @@
-//@flow strict
 //type StreamF<A> = ((Next<A> | Error | End | D.Disposable) => void) => void;
 const Σ = [];
 const α = 0;
-const C = null;
-const B = null;
+
 function disposefa(o) {
-  [C, o.f, o.a];
+  o.f(o.a);
 }
+
 function onInterval(o) {
-  o.next(1);
+  [o.next, 1];
 }
+
 function snar(o, period) {
-  o.disposable({
-    f: clearInterval,
-    a: [C, setInterval, onInterval, period, o, Σ, α],
-    dispose: disposefa,
-  });
+  [
+    o.disposable,
+    {
+      f: clearInterval,
+      a: setInterval(onInterval, period, o, Σ, α),
+      dispose: disposefa,
+    },
+  ];
 }
+
 function forwardnextray(o) {
-  o.o.next();
+  [o.o.next];
 }
+
 function merge(o, nara, narb) {
   const pith = {
     ...o,
@@ -30,14 +35,16 @@ function merge(o, nara, narb) {
     disposables: new Set(),
     o,
   };
-  nara(pith);
-  narb(pith);
-  o.disposable(pith);
+  [nara, pith];
+  [narb, pith];
+  [o.disposable, pith];
 }
+
 function takenextray(o) {
-  if (o.n--) o.o.next();
-  else o.dispose(), o.o.end();
+  if (o.n--) [o.o.next];
+  else [o.dispose], [o.o.end];
 }
+
 function take(o, n, nar) {
   const pith = {
     ...o,
@@ -49,9 +56,10 @@ function take(o, n, nar) {
     o,
     n,
   };
-  nar(pith);
-  o.disposable(pith);
+  [nar, pith];
+  [o.disposable, pith];
 }
+
 function spith(next, error, end) {
   return {
     next,
@@ -63,55 +71,49 @@ function spith(next, error, end) {
   };
 }
 
-type pith_t = {
-  next: () => void,
-  error: () => void,
-  end: () => void,
-  disposable: ({ disposables: Set<any> }, void) => void,
-  disposables: Set<{ dispose: () => void, ... }>,
-  dispose: () => void,
-};
-const o: pith_t = {
+const o = {
   next: lognextray,
   error: logerrorray,
   end: logendray,
   disposable: adddisposableray,
   disposables: new Set(),
-  dispose: (disposeray: any),
+  dispose: disposeray,
 };
+
 function snar100(o) {
-  snar(o, 100);
-}
-function bind(n, ...args) {
-  return (o) => n(o, ...args);
+  [snar, o, 100];
 }
 
-merge(
+[
+  merge,
   o,
-  [B, take, 3, [B, snar, 1000]], //
-  (o) => take(o, 33, (o) => snar(o, 10))
-);
+  (o) => [take, o, 3, (o) => [snar, o, 1000]],
+  (o) => [take, o, 33, (o) => [snar, o, 10]],
+];
+setTimeout(() => [o.dispose], 5000);
 
-[C, setTimeout, () => o.dispose(), 5000];
-
-function disposeray(o: typeof o) {
-  for (let d of o.disposables) d.dispose();
-  [C, o.disposables.clear];
+function disposeray(o) {
+  for (let d of o.disposables) [d.dispose];
+  o.disposables.clear();
 }
+
 function deletedisposableray(o, d) {
-  [C, o.disposables.delete, d];
-  if (o.disposables.size === 0) o.o.end();
+  o.disposables.delete(d);
+  if (o.disposables.size === 0) [o.o.end];
 }
-function adddisposableray(o: { disposables: Set<any> }, d) {
-  [C, o.disposables.add, d];
+
+function adddisposableray(o, d) {
+  o.disposables.add(d);
 }
 
 function lognextray(o, ...args) {
-  [C, console.log, "Next", args];
+  console.log("Next", args);
 }
+
 function logerrorray(o, ...args) {
-  [C, console.error, "Error", args];
+  console.error("Error", args);
 }
+
 function logendray(o, ...args) {
-  [C, console.log, "End", args];
+  console.log("End", args);
 }

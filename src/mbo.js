@@ -1,45 +1,49 @@
 function v({ o, b }) {
-  b(o);
+  [b, o];
 }
+
 function mb(o, a, b) {
   const ob = { ...o, v, o, b };
-  a(ob);
+  [a, ob];
 }
+
 const o = {
   v(o, ...nargs) {
-    [C, console.log, "v", nargs];
+    console.log("v", nargs);
   },
+
   e(o, ...nargs) {
-    [C, console.log, "e", nargs];
+    console.log("e", nargs);
   },
 };
+
 function example(o) {
   //Left identity:   return a >>= f ≡ f a
-  const ret = (o) => o.v();
-  const f = (o, a) => o.v(a * 2);
-  mb(o, [B, ret, 3], f);
+  const ret = (o) => [o.v];
+  const f = (o, a) => [o.v, a * 2];
+  [mb, o, (o) => [ret, o, 3], f];
   // ===
-  f(o, 3);
+  [f, o, 3];
 
   //Right identity:  m >>= return ≡ m
-  const M = [B, ret, 6];
-  mb(o, M, ret);
+  const M = (o) => [ret, o, 6];
+  [mb, o, M, ret];
   // ===
-  M(o);
+  [M, o];
 
   //Associativity:   (m >>= f) >>= g ≡ m >>= (\\x -> f x >>= g)
-  const g = (o, b) => o.v(b / 2);
-  mb(o, [B, mb, M, f], g);
+  const g = (o, b) => [o.v, b / 2];
+  [mb, o, (o) => [mb, o, M, f], g];
   // ===
-  mb(o, M, [B, mb, f, g]);
+  [mb, o, M, (o) => [mb, o, f, g]];
 }
-//[C, example, o, [], 0];
+//example(o, [], 0);
+
 function rg(o, a, b, c, d) {
-  if (a === mb) c(o, a, d, rg, d, mb, b);
-  else c(o, d, a, mb, d, mb, b);
+  if (a === mb) [c, o, a, d, rg, d, mb, b];
+  else [c, o, d, a, mb, d, mb, b];
 }
 
 module.exports = { mb, o, rg };
-
 global.Σ = [];
 global.α = 0;

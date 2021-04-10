@@ -1,5 +1,4 @@
 module.exports = function ({ types: t }) {
-  const vset = new Set();
   const oname = "o";
   const bname = "β";
   const aname = "α";
@@ -9,25 +8,21 @@ module.exports = function ({ types: t }) {
     visitor: {
       ArrayExpression(path) {
         const args = path.node.elements;
-        if (args.length)
-          if (args[0].name === "Clog")
+        if (
+          args.length &&
+          (path.parent.type === "ExpressionStatement" ||
+            path.parent.type === "ArrowFunctionExpression" ||
+            (path.parent.type === "SequenceExpression" &&
+              (path.parentPath.parent.type === "ExpressionStatement" ||
+                path.parentPath.parent.type === "ArrowFunctionExpression")))
+        )
+          if (args[0].type === "MemberExpression")
             path.replaceWith(
-              callExpression(
-                t.memberExpression(
-                  t.identifier("console"),
-                  t.identifier("log")
-                ),
-                args.slice(1)
-              )
+              nargocallsequence(args[0], args.slice(1), args[0].object)
             );
-          else if (args[0].name === "C")
-            path.replaceWith(callExpression(args[1], args.slice(2)));
-          else if (args[0].name === "B")
+          else
             path.replaceWith(
-              t.arrowFunctionExpression(
-                [t.identifier(oname)],
-                nargocallsequence(args[1], args.slice(2), t.identifier(oname))
-              )
+              nargocallsequence(args[0], args.slice(2), args[1])
             );
       },
       Function(path) {
@@ -69,7 +64,7 @@ module.exports = function ({ types: t }) {
           path.node.params.push(
             t.assignmentPattern(
               spread.argument,
-              callExpression(
+              t.callExpression(
                 t.memberExpression(t.identifier(sname), t.identifier("slice")),
                 [t.numericLiteral(0), t.identifier(bname)]
               )
@@ -77,39 +72,15 @@ module.exports = function ({ types: t }) {
             t.assignmentPattern(t.identifier(aname), t.numericLiteral(0))
           );
       },
-      CallExpression(cep) {
-        if (!vset.has(cep.node))
-          if (cep.node.callee.type === "MemberExpression")
-            cep.replaceWith(
-              nargocallsequence(
-                cep.node.callee,
-                cep.node.arguments,
-                cep.node.callee.object
-              )
-            );
-          else
-            cep.replaceWith(
-              nargocallsequence(
-                cep.node.callee,
-                cep.node.arguments.slice(1),
-                cep.node.arguments[0]
-              )
-            );
-      },
     },
   };
-  function callExpression(...args) {
-    const n = t.callExpression(...args);
-    vset.add(n);
-    return n;
-  }
   function nargocallsequence(callee, arguments_, pith) {
     const spreads = arguments_
       .filter((a) => a.type === "SpreadElement")
       .map((s) => t.memberExpression(s.argument, t.identifier("length")));
     if (spreads.length)
       return t.sequenceExpression([
-        callExpression(
+        t.callExpression(
           t.memberExpression(
             arguments_.length === 1
               ? arguments_[0].argument
@@ -137,7 +108,7 @@ module.exports = function ({ types: t }) {
             ),
           ]
         ),
-        callExpression(callee, [
+        t.callExpression(callee, [
           pith,
           t.identifier(sname),
           spreads.reduce(
@@ -156,7 +127,7 @@ module.exports = function ({ types: t }) {
           )
         )
       ),
-      callExpression(callee, [
+      t.callExpression(callee, [
         pith,
         t.identifier(sname),
         offset(arguments_.length),
