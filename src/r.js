@@ -1,24 +1,24 @@
 const { mb, o } = require("./mbo");
 
 function r(o, s) {
-  [o.v, s + 1];
+  Go(o.v, s + 1);
 }
 
-[
+Go(
   mb,
   o,
   {
     a: 0,
     b: 0,
   },
-  (o, s) => [o.v, s, s.a],
+  (o, s) => Go(o.v, s, s.a),
   r,
   mb,
-  (o, s, v) => [o.v, { ...s, a: v }],
+  (o, s, v) => Go(o.v, { ...s, a: v }),
   mb,
-  (o, s) => [o.v, s, s.b],
+  (o, s) => Go(o.v, s, s.b),
   mb,
   r,
   mb,
-  (o, s, v) => [o.v, { ...s, b: v }],
-];
+  (o, s, v) => Go(o.v, { ...s, b: v })
+);

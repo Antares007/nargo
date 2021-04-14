@@ -7,22 +7,19 @@ function disposefa(o) {
 }
 
 function onInterval(o) {
-  [o.next, 1];
+  Go(o.next, 1);
 }
 
 function snar(o, period) {
-  [
-    o.disposable,
-    {
-      f: clearInterval,
-      a: setInterval(onInterval, period, o, Σ, α),
-      dispose: disposefa,
-    },
-  ];
+  Go(o.disposable, {
+    f: clearInterval,
+    a: setInterval(onInterval, period, o, Σ, α),
+    dispose: disposefa,
+  });
 }
 
 function forwardnextray(o) {
-  [o.o.next];
+  Go(o.o.next);
 }
 
 function merge(o, nara, narb) {
@@ -35,14 +32,14 @@ function merge(o, nara, narb) {
     disposables: new Set(),
     o,
   };
-  [nara, pith];
-  [narb, pith];
-  [o.disposable, pith];
+  Go(nara, pith);
+  Go(narb, pith);
+  Go(o.disposable, pith);
 }
 
 function takenextray(o) {
-  if (o.n--) [o.o.next];
-  else [o.dispose], [o.o.end];
+  if (o.n--) Go(o.o.next);
+  else Go(o.dispose), Go(o.o.end);
 }
 
 function take(o, n, nar) {
@@ -56,8 +53,8 @@ function take(o, n, nar) {
     o,
     n,
   };
-  [nar, pith];
-  [o.disposable, pith];
+  Go(nar, pith);
+  Go(o.disposable, pith);
 }
 
 function spith(next, error, end) {
@@ -81,25 +78,26 @@ const o = {
 };
 
 function snar100(o) {
-  [snar, o, 100];
+  Go(snar, o, 100);
 }
 
-[
+Go(
   merge,
   o,
-  (o) => [take, o, 3, (o) => [snar, o, 1000]],
-  (o) => [take, o, 33, (o) => [snar, o, 10]],
-];
-setTimeout(() => [o.dispose], 5000);
+  (o) => Go(take, o, 3, (o) => Go(snar, o, 1000)),
+  (o) => Go(take, o, 33, (o) => Go(snar, o, 10))
+);
+setTimeout(() => Go(o.dispose), 5000);
 
 function disposeray(o) {
-  for (let d of o.disposables) [d.dispose];
+  for (let d of o.disposables) Go(d.dispose);
+
   o.disposables.clear();
 }
 
 function deletedisposableray(o, d) {
   o.disposables.delete(d);
-  if (o.disposables.size === 0) [o.o.end];
+  if (o.disposables.size === 0) Go(o.o.end);
 }
 
 function adddisposableray(o, d) {

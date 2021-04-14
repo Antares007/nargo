@@ -6,71 +6,34 @@ module.exports = function ({ types: t }) {
   return {
     name: "nargo-transform",
     visitor: {
-      ArrayExpression(path) {
-        const args = path.node.elements;
-        if (
-          args.length &&
-          (path.parent.type === "ExpressionStatement" ||
-            path.parent.type === "ArrowFunctionExpression" ||
-            (path.parent.type === "SequenceExpression" &&
-              (path.parentPath.parent.type === "ExpressionStatement" ||
-                path.parentPath.parent.type === "ArrowFunctionExpression")))
-        )
-          if (args[0].type === "MemberExpression")
+      CallExpression(path) {
+        const args = path.node.arguments;
+        if (path.node.callee.name === "Go" || path.node.callee.name === "C")
+          if (args.length && args[0].type === "MemberExpression")
             path.replaceWith(
               nargocallsequence(args[0], args.slice(1), args[0].object)
             );
-          else
+          else if (args.length > 1)
             path.replaceWith(
               nargocallsequence(args[0], args.slice(2), args[1])
             );
       },
       Function(path) {
+        const params = path.node.params;
         if (
-          !path.node.params.length ||
-          (path.node.params[0].name !== oname &&
-            (path.node.params[0].type !== "ObjectPattern" ||
-              !path.node.params[0].properties.some(
+          params.length &&
+          ((params[0].type === "Identifier" &&
+            (params[0].name === oname ||
+              params[0].name.startsWith(oname + "_"))) ||
+            (params[0].type === "ObjectPattern" &&
+              params[0].properties.some(
                 (p) => p.type === "ObjectProperty" && p.key.name === oname
               )))
         )
-          return;
-
-        const params = path.node.params.slice(1).reverse();
-        const spread =
-          params.length && params[0].type === "RestElement"
-            ? params.shift()
-            : null;
-        path.node.params = [
-          path.node.params[0],
-          t.identifier(sname),
-          t.identifier(spread ? bname : aname),
-          ...params.map((p) =>
-            t.assignmentPattern(
-              p,
-              t.memberExpression(
-                t.identifier(sname),
-                t.updateExpression(
-                  "--",
-                  t.identifier(spread ? bname : aname),
-                  true
-                ),
-                true
-              )
-            )
-          ),
-        ];
-        if (spread)
-          path.node.params.push(
-            t.assignmentPattern(
-              spread.argument,
-              t.callExpression(
-                t.memberExpression(t.identifier(sname), t.identifier("slice")),
-                [t.numericLiteral(0), t.identifier(bname)]
-              )
-            ),
-            t.assignmentPattern(t.identifier(aname), t.numericLiteral(0))
-          );
+          path.node.params = [
+            params[0],
+            ...nargoarms(params.slice(1).reverse()),
+          ];
       },
     },
   };
@@ -138,5 +101,39 @@ module.exports = function ({ types: t }) {
     return i
       ? t.binaryExpression("+", t.identifier(aname), t.numericLiteral(i))
       : t.identifier(aname);
+  }
+  function nargoarms(params) {
+    const spread =
+      params.length && params[0].type === "RestElement" ? params.shift() : null;
+    return [
+      t.identifier(sname),
+      t.identifier(spread ? bname : aname),
+      ...params.map((p) =>
+        t.assignmentPattern(
+          p,
+          t.memberExpression(
+            t.identifier(sname),
+            t.updateExpression(
+              "--",
+              t.identifier(spread ? bname : aname),
+              true
+            ),
+            true
+          )
+        )
+      ),
+      ...(spread
+        ? [
+            t.assignmentPattern(
+              spread.argument,
+              t.callExpression(
+                t.memberExpression(t.identifier(sname), t.identifier("slice")),
+                [t.numericLiteral(0), t.identifier(bname)]
+              )
+            ),
+            t.assignmentPattern(t.identifier(aname), t.numericLiteral(0)),
+          ]
+        : []),
+    ];
   }
 };
