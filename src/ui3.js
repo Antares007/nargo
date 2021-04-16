@@ -4,25 +4,22 @@ function onclick(o, event, delta, depth) {
   C(o.parent, depth, counter);
 }
 function button(o, label, depth) {
+  //  console.log(depth);
   C(o.text, label);
   C(o.on, label === "+" ? 1 : -1, depth, "click", onclick);
-  if (depth) C(o.selement, depth - 1, "div", counter, label, initstate);
+  if (depth) C(o.skelement, depth - 1, "div", counter, label, initstate);
 }
 let i = 0;
 function counter(o, depth) {
-  if (1) {
-    C(o.element, "+", depth, "button", button);
-    C(o.element, "-", depth, "button", button);
-    C(o.text, o.state.n + "");
-  } else {
-    C(o.element, "-", depth, "button", button);
-    C(o.element, "+", depth, "button", button);
-    C(o.text, o.state.n + "");
-  }
+  C(o.selement, "+", depth, "button", button);
+  C(o.selement, "-", depth, "button", button);
+  C(o.text, o.state.n + "");
 }
 
 const Σ = [];
 const α = 0;
+const Σ1 = [];
+const α1 = 0;
 const initstate = { n: 0 };
 const o = {
   pith(o, oo) {
@@ -35,17 +32,20 @@ const o = {
   state: initstate,
 };
 const rootelm = (document.body = document.createElement("body"));
-C(Sbark, o, 0, rootelm, counter);
+C(Sbark, o, 1, rootelm, counter);
 
-function Sbark(o_bs, elm, nar) {
-  C(obark, o_bs, o_bs, o_bs.state, void 0, setState, nar, elm, ring);
+function Sbark(o, elm, nar) {
+  const o_bs = o;
+  C(obark, o_bs, void 0, nar, elm, ring)(o_bs, o_bs.state, setState);
 }
-function ring(o_b, o_bs, state, key, setState, nar) {
+function ring(o, [key, nar], [o_bs, state, setState]) {
+  const o_b = o;
   C(nar, {
     bark: sbark,
     parent: sparent,
     element: selement,
     selement: sselement,
+    skelement: skelement,
     text: stext,
     on: son,
     state,
@@ -55,34 +55,46 @@ function ring(o_b, o_bs, state, key, setState, nar) {
     o_b,
   });
 }
-function setState(o_bs, ns) {
+function setState(o, ns) {
+  const o_bs = o;
   o_bs.state = ns;
   C(o_bs.o_bs.setState, { ...o_bs.o_bs.state, ...ns });
 }
-function setKeyState(o_bs, ns) {
+function setKeyState(o, ns) {
+  const o_bs = o;
   o_bs.state = ns;
   C(o_bs.o_bs.setState, { ...o_bs.o_bs.state, [o_bs.key]: ns });
 }
-function sselement(o_bs, tag, nar, key, init) {
+function skelement(o, tag, nar, key, init) {
+  const o_bs = o;
   const state = o_bs.state[key] || init;
-  C(o_bs.o_b.element, o_bs, state, key, setKeyState, nar, tag, ring);
+  C(o_bs.o_b.element, key, nar, tag, ring)(o_bs, state, setKeyState);
 }
-function selement(o_bs, tag, nar) {
-  C(o_bs.o_b.element, o_bs, o_bs.state, void 0, setState, nar, tag, ring);
+function selement(o) {
+  const o_bs = o;
+  C(o_bs.o_b.element);
 }
-function sbark(o_bs, nar) {
-  C(o_bs.o_b.bark, o_bs, o_bs.state, void 0, setState, nar, ring);
+function sselement(o, tag, nar) {
+  const o_bs = o;
+  C(o_bs.o_b.element, void 0, nar, tag, ring)(o_bs, o_bs.state, setState);
 }
-function sparent(o_bs, nar) {
-  C(o_bs.o_b.parent, o_bs.o_bs, o_bs.o_bs.state, void 0, setState, nar, ring);
+function sbark(o, nar) {
+  const o_bs = o;
+  C(o_bs.o_b.bark, void 0, nar, ring)(o_bs, o_bs.state, setState);
 }
-function son(o_bs, type, handler) {
-  C(o_bs.o_b.on, o_bs, o_bs.state, void 0, setState, handler, type, ring);
+function sparent(o, nar) {
+  const o_bs = o;
+  C(o_bs.o_b.parent, void 0, nar, ring)(o_bs.o_bs, o_bs.o_bs.state, setState);
 }
-function stext(o_bs) {
+function son(o, type, handler) {
+  const o_bs = o;
+  C(o_bs.o_b.on, void 0, handler, type, ring)(o_bs, o_bs.state, setState);
+}
+function stext(o) {
+  const o_bs = o;
   C(o_bs.o_b.text);
 }
-
+//*************************
 function obark(o, elm, nar, ...args) {
   const s = {
     elm,
@@ -115,7 +127,12 @@ function bark(o, nar) {
 
   for (let l = piths.length; l > childs_count; l--) {
     const p = piths.splice(childs_count, 1)[0];
-    p.bark && C(p.bark, empty);
+    if (p.bark) {
+      //console.group(p.s.nar.name);
+      //console.log(p.s.args);
+      C(p.bark, empty);
+      //console.groupEnd(p.s.nar.name);
+    }
     console.log(elm.removeChild(elm.childNodes[childs_count]).nodeName);
   }
 
@@ -137,6 +154,7 @@ function element(o) {
     {
       eq: eqElement,
       swap,
+      found: foundE,
       next,
       create: createElement,
       o,
@@ -145,16 +163,18 @@ function element(o) {
     o.s.piths
   );
 }
+function foundE(o) {
+  debugger;
+}
 
 function createElement(o, tag, nar, ...args) {
   C(obark, o.o, ...args, document.createElement(tag), nar);
 }
 
 function eqElement(o, tag, rnar, { s: { nar: lnar, args: largs } }, ...rargs) {
-  o.r =
-    lnar === rnar &&
-    largs.length === rargs.length &&
-    largs.every((a, i) => rargs[i] === a);
+  o.r = lnar === rnar && eq(largs, rargs);
+  //largs.length === rargs.length &&
+  //largs.every((a, i) => rargs[i] === a);
 }
 
 function swap(o, i) {
@@ -173,6 +193,7 @@ function text(o) {
     {
       eq: eqText,
       swap,
+      found: foundT,
       next,
       create: createText,
       o,
@@ -180,6 +201,9 @@ function text(o) {
     o.s.childs_count,
     o.s.piths
   );
+}
+function foundT(o) {
+  debugger;
 }
 
 function createText(o, text) {
@@ -201,6 +225,7 @@ function on(o) {
     {
       eq: eqL,
       swap: swapL,
+      found: foundL,
       next: nextL,
       create: createL,
       o,
@@ -209,12 +234,16 @@ function on(o) {
     o.s.listeners
   );
 }
+function foundL(o) {
+  debugger;
+}
 
-function createL(o, type, handler, ...args) {
+function createL(o, [type, handler, ...args], [...bargs]) {
   const { listeners, listeners_count, elm } = o.o.s;
   const listener = {
     o: o.o,
     args,
+    bargs,
     type,
     handler,
     handleEvent,
@@ -232,14 +261,12 @@ function eqL(o, type, handler, l, ...args) {
 }
 
 function handleEvent(event) {
-  const { o, handler, args } = this;
-  C(handler, o, event, ...args);
+  const { o, handler, args, bargs } = this;
+  C(handler, o, event, ...args)(...bargs);
 }
-
 function nextL(o) {
   o.o.s.listeners_count++;
 }
-
 function swapL(o, i) {
   const { listeners, listeners_count } = o.o.s;
   listeners.splice(listeners_count, 0, listeners.splice(i, 1)[0]);
@@ -248,14 +275,36 @@ function swapL(o, i) {
 function reconciliation(o, index, piths) {
   for (let i = index, l = piths.length; i < l; i++) {
     C(o.eq, piths[i]);
-
     if (o.r) {
       if (index < i) C(o.swap, i);
+      else C(o.found, i);
       C(o.next);
       return;
     }
   }
-
   C(o.create);
   C(o.next);
+}
+function eq(a, b) {
+  if (a === b) return true;
+  if (Array.isArray(a)) {
+    if (Array.isArray(b) && a.length === b.length) {
+      for (let i = 0, l = a.length; i < l; i++)
+        if (!eq(a[i], b[i])) return false;
+      return true;
+    }
+    return false;
+  }
+  if (a instanceof Date)
+    return b instanceof Date && a.getTime() === b.getTime();
+  if (a == null || b == null) return a == b;
+  if (typeof a === "object" && typeof b === "object") {
+    const akeys = Object.keys(a);
+    if (akeys.length === Object.keys(b).length) {
+      for (let i = 0, l = akeys.length; i < l; i++)
+        if (!eq(a[akeys[i]], b[akeys[i]])) return false;
+      return true;
+    }
+  }
+  return false;
 }
