@@ -11,6 +11,7 @@ const cb = (o) => {
 };
 const mb0 = (o, a, b) => C(a, [cb, f1, f2, f3, f4, f5, f6, { o, b }]);
 const mb1 = (o, a, b) => C(a, [f0, cb, f2, f3, f4, f5, f6, { o, b }]);
+module.exports = { mb0, mb1 };
 const one = (o) => C(o[0], 1);
 
 const exp = (o) =>
@@ -25,4 +26,4 @@ const example = (o) => {
   C(o[0], 1, 2, 3);
   C(mb0, o, one, add, mb0, add, mb0, add);
 };
-example([(o, ...args) => console.log(args)], [], 0, [], 0);
+//example([(o, ...args) => console.log(args)], [], 0, [], 0);
