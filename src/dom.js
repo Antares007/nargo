@@ -5,8 +5,8 @@ const example0 = (o) => {
   C(mb0, o, document.body, npith, (o, np) => {
     console.log("np", np);
 
-    C(mb1, np, "click", r0, (np, ...args) => {
-      console.log("args", args);
+    C(mb1, np, "argument", np, "click", r0, (np, ...args) => {
+      console.log(args);
     });
 
     C(mb0, np, document.createTextNode("hello"), npith, (o) => C(o[1]));
@@ -48,15 +48,17 @@ const handleEvent = (e) => {
     );
 };
 const start = (o, oc, type, ...args) => {
-  return console.log(type, args);
+  console.log(oc, type, args);
+  return;
   if (type === null) {
-    o[3].olset.add(oc);
+    const ol = oc;
+    o[3].olset.add(ol);
   } else {
     if (o[3].fmap[type] == null) {
       const ol = [
-        void 0,
-        void 0,
-        lend,
+        (o) => C(o[3].o[0]),
+        (o) => C(o[3].o[1]),
+        (o) => C(o[3].o[2]),
         { type, handleEvent, piths: [oc], pc: 1, args, ol, o },
       ];
       o[3].fmap[type] = ol;
@@ -87,7 +89,10 @@ const lend = (o, oc) => {
     ol[3].o[3].node.removeEventListener(ol[3].type, ol[3]),
       delete ol[3].o[3].fmap[ol[3].type];
 };
-const end = (o) => {
+const end = (o, type) => {
+  if (type === null) {
+  } else {
+  }
   if (o[3].piths == null) return;
   for (let l = o[3].piths.length; l > o[3].pc; l--) {
     const np = o[3].piths.splice(o[3].pc, 1)[0];
