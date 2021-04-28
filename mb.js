@@ -1,16 +1,12 @@
-const f0 = (o) => C(o[7].o[0]);
-const f1 = (o) => C(o[7].o[1]);
-const f2 = (o) => C(o[7].o[2]);
-const f3 = (o) => C(o[7].o[3]);
-const f4 = (o) => C(o[7].o[4]);
-const f5 = (o) => C(o[7].o[5]);
-const f6 = (o) => C(o[7].o[6]);
+const f0 = (o) => C(o[3].o[0]);
+const f1 = (o) => C(o[3].o[1]);
+const f2 = (o) => C(o[3].o[2]);
 const cb = (o) => {
-  const b = o[7].b;
-  C(b, o[7].o);
+  const b = o[3].b;
+  C(b, o[3].o);
 };
-const mb0 = (o, a, b) => C(a, [cb, f1, f2, f3, f4, f5, f6, { o, b }]);
-const mb1 = (o, a, b) => C(a, [f0, cb, f2, f3, f4, f5, f6, { o, b }]);
+const mb0 = (o, a, b) => C(a, [cb, f1, f2, { o, b }]);
+const mb1 = (o, a, b) => C(a, [f0, cb, f2, { o, b }]);
 module.exports = { mb0, mb1 };
 const one = (o) => C(o[0], 1);
 

@@ -9,13 +9,7 @@ const example0 = (o) => {
   });
 };
 setTimeout(() => {
-  example0(
-    pith({}, (o, ...args) => console.log(args)),
-    [],
-    0,
-    [],
-    0
-  );
+  example0([(o, ...args) => console.log(args), , {}], [], 0, [], 0);
 }, 0);
 const npith = (o, node) => {
   if (node.nodeType === 1) {
@@ -23,13 +17,13 @@ const npith = (o, node) => {
     const f = (o, p) => piths.push(p);
     const oc = [f];
     for (let n of node.childNodes) C(npith, oc, n);
-    C(o[0], pith({ node, piths, pc: 0, fmap: {} }, nstart, mbn(nnode), nend));
+    C(o[0], [nstart, mbn(nnode), nend, { node, piths, pc: 0, fmap: {} }]);
   } else {
     node =
       node.nodeType === 3
         ? node
         : document.createTextNode("NT:" + node.nodeType);
-    C(o[0], pith({ node }, nstart, void 0, nend));
+    C(o[0], [nstart, void 0, nend, { node }]);
   }
 };
 const handleEvent = (e) => {
@@ -45,27 +39,27 @@ const handleEvent = (e) => {
 const nstart = (o, oc, type, ...args) => {
   if (type === "listenerlisten") {
   } else {
-    if (o[7].fmap[type] == null) {
-      const ol = pith(
+    if (o[3].fmap[type] == null) {
+      const ol = [
+        void 0,
+        void 0,
+        lend,
         { type, handleEvent, piths: [oc], pc: 1, args, ol, o },
-        void 0,
-        void 0,
-        lend
-      );
-      o[7].fmap[type] = ol;
-      o[7].node.addEventListener(type, ol[7]);
+      ];
+      o[3].fmap[type] = ol;
+      o[3].node.addEventListener(type, ol[3]);
       C(oc[0], ol, "listenerlisten");
     } else {
-      const ol = o[7].fmap[type];
-      const i = ol[7].piths.indexOf(oc);
+      const ol = o[3].fmap[type];
+      const i = ol[3].piths.indexOf(oc);
       if (i < 0);
-      else if (i < ol[7].pc) return;
-      else if (i === ol[7].pc) {
-        ol[7].pc++;
+      else if (i < ol[3].pc) return;
+      else if (i === ol[3].pc) {
+        ol[3].pc++;
         return;
-      } else ol[7].piths.splice(i, 1);
-      ol[7].piths.splice(ol[7].pc, 0, oc);
-      ol[7].pc++;
+      } else ol[3].piths.splice(i, 1);
+      ol[3].piths.splice(ol[3].pc, 0, oc);
+      ol[3].pc++;
       C(oc[0], ol, "listenerlisten");
     }
   }
@@ -73,44 +67,41 @@ const nstart = (o, oc, type, ...args) => {
 // o: ol
 const lend = (o, oc) => {
   const ol = o;
-  const i = ol[7].piths.indexOf(oc);
+  const i = ol[3].piths.indexOf(oc);
   if (i < -1) return;
-  ol[7].piths.splice(i, 1);
-  if (ol[7].piths.length === 0 && ol[7].o[7].fmap[ol[7].type])
-    ol[7].o[7].node.removeEventListener(ol[7].type, ol[7]),
-      delete ol[7].o[7].fmap[ol[7].type];
+  ol[3].piths.splice(i, 1);
+  if (ol[3].piths.length === 0 && ol[3].o[3].fmap[ol[3].type])
+    ol[3].o[3].node.removeEventListener(ol[3].type, ol[3]),
+      delete ol[3].o[3].fmap[ol[3].type];
 };
 const nend = (o) => {
-  if (o[7].piths) {
-    for (let l = o[7].piths.length; l > o[7].pc; l--) {
-      const np = o[7].piths.splice(o[7].pc, 1)[0];
-      o[7].node.removeChild(np[7].node);
-      C(np[2]);
-    }
-    o[7].pc = 0;
+  if (o[3].piths == null) return;
+  for (let l = o[3].piths.length; l > o[3].pc; l--) {
+    const np = o[3].piths.splice(o[3].pc, 1)[0];
+    o[3].node.removeChild(np[3].node);
+    C(np[2]);
   }
-  //for (let type of Object.keys(o[7].fmap)) {
-  //  const listener = o[7].fmap[type];
-  //  for (let oc of listener.piths) C(oc[2], listener);
-  //}
+  o[3].pc = 0;
+  for (let type of Object.keys(o[3].fmap)) {
+    const ol = o[3].fmap[type];
+    for (let l = ol[3].piths.length; l > ol[3].pc; l--) {
+      const oc = ol[3].piths.splice(ol[3].pc, 1)[0];
+      C(oc[2], ol);
+    }
+    ol[3].pc = 0;
+  }
 };
 const nnode = (o, np) => {
-  const i = o[7].piths.indexOf(np);
+  const i = o[3].piths.indexOf(np);
   if (i < 0);
-  else if (i < o[7].pc) return;
-  else if (i === o[7].pc) {
-    o[7].pc++;
+  else if (i < o[3].pc) return;
+  else if (i === o[3].pc) {
+    o[3].pc++;
     return;
-  } else o[7].piths.splice(i, 1);
-  o[7].node.insertBefore(np[7].node, o[7].node.childNodes[o[7].pc]);
-  o[7].piths.splice(o[7].pc, 0, np);
-  o[7].pc++;
-};
-const pith = (...args) => {
-  args.length = 8;
-  const s = args.shift();
-  args[7] = s;
-  return args;
+  } else o[3].piths.splice(i, 1);
+  o[3].node.insertBefore(np[3].node, o[3].node.childNodes[o[3].pc]);
+  o[3].piths.splice(o[3].pc, 0, np);
+  o[3].pc++;
 };
 const mbn = (nar) => (o, a) => {
   if (typeof a === "function") {
@@ -120,12 +111,12 @@ const mbn = (nar) => (o, a) => {
 
 function start(o, oc, type, nar, ...args) {
   const listener = { handleEvent, end, type, nar, args, o };
-  o[7].node.addEventListener(type, listener);
+  o[3].node.addEventListener(type, listener);
   C(oc.start, listener);
 }
 function end(o) {
-  console.log("removeEventListener", o[7].node.nodeName);
-  o[7].node.removeEventListener(o.type, o);
+  console.log("removeEventListener", o[3].node.nodeName);
+  o[3].node.removeEventListener(o.type, o);
 }
 function insertBefore(o) {
   console.log("insertBefore", o);
