@@ -8,7 +8,7 @@ const cb = (o) => {
 const mb0 = (o, a, b) => C(a, [cb, C3o1, C3o2, { o, b }]);
 const mb1 = (o, a, b) => C(a, [C3o0, cb, C3o2, { o, b }]);
 const mb2 = (o, a, b) => C(a, [C3o0, C3o2, cb, { o, b }]);
-module.exports = { mb0, mb1, mb2, C3o0, C3o1, C3o2 };
+module.exports = { mb0, mb1, mb2, cb, C3o0, C3o1, C3o2 };
 const one = (o) => C(o[0], 1);
 
 const exp = (o) =>
