@@ -1,4 +1,4 @@
-const { mb0, mb1 } = require("../mb");
+const { mb0, mb1, cb, C3o0, C3o1, C3o2 } = require("../mb");
 const C30 = (o) => C(o[3][0]);
 const C31 = (o) => C(o[3][1]);
 const C32 = (o) => C(o[3][2]);
@@ -9,24 +9,22 @@ const example0 = (o) => {
       np[0],
       "argument",
       [
-        C30,
-        C31,
-        C32,
-        [
-          C30,
-          (o, ...args) => {
-            C(o[3][1], ...args, document.createTextNode("A"), npith);
+        C3o0,
+        cb,
+        C3o2,
+        {
+          o: np,
+          b(o, ...args) {
+            C(o[1], ...args, document.createTextNode("A"), npith);
           },
-          C32,
-          np,
-        ],
+        },
       ],
       "click"
     );
     C(mb0, np, document.createTextNode("hello"), npith, (o) => C(o[1]));
     C(np[1], document.createTextNode("there"), npith);
-
     C(np[2]);
+    C(o[0], np);
   });
 };
 setTimeout(() => {
@@ -57,7 +55,6 @@ function handleEvent(e) {
 }
 function start(o, oc, type, ...args) {
   if (type === "listenerlisten") {
-    console.log("listen", oc);
   } else {
     if (o[3].fmap[type] == null) {
       const ol = [
