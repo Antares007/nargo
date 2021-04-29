@@ -3,14 +3,12 @@ module.exports = function ({ types: t }) {
   const bname = "β";
   const aname = "α";
   const sname = "Σ";
-  //
   return {
     name: "nargo-transform",
     visitor: {
       Function(path) {
         const params = path.node.params;
-        if (params.length === 0);
-        else if (
+        if (
           params.length &&
           ((params[0].type === "Identifier" && params[0].name === oname) ||
             (params[0].type === "ObjectPattern" &&
@@ -18,86 +16,54 @@ module.exports = function ({ types: t }) {
                 (p) => p.type === "ObjectProperty" && p.key.name === oname
               )))
         )
-          if (
-            params.length === 3 &&
-            params[1].type === "ArrayPattern" &&
-            params[2].type === "ArrayPattern"
-          ) {
-            const [s0, a0, ...arms0] = nargoarms(
-              params[1].elements.reverse(),
-              sname,
-              aname,
-              bname
-            );
-            const [s1, a1, ...arms1] = nargoarms(
-              params[2].elements.reverse(),
-              sname + "1",
-              aname + "1",
-              bname + "1"
-            );
-            path.node.params = [params[0], s0, a0, s1, a1, ...arms0, ...arms1];
-          } else {
-            const [s0, a0, ...arms0] = nargoarms(
-              params.slice(1).reverse(),
-              sname,
-              aname,
-              bname
-            );
-            const [s1, a1, ...arms1] = [
-              t.identifier(sname + "1"),
-              t.identifier(aname + "1"),
-            ];
-            path.node.params = [params[0], s0, a0, s1, a1, ...arms0, ...arms1];
-          }
+          path.node.params = [
+            params[0],
+            ...nargoarms(params.slice(1).reverse()),
+            t.identifier(
+              "φ" +
+                (path.node.id
+                  ? path.node.id.name
+                  : path.parent.type === "VariableDeclarator"
+                  ? path.parent.id.name
+                  : "na")
+            ),
+          ];
       },
       CallExpression(path) {
         if (path.node.callee.name === "Go" || path.node.callee.name === "C") {
           const args = path.node.arguments;
-          const callee = args[0];
-          let pith;
-          let args0;
-          let args1 = [];
-          let cep = path;
-          if (
-            path.parent.type === "CallExpression" &&
-            path.parent.callee === path.node
-          ) {
-            cep = path.parentPath;
-            args1 = path.parent.arguments;
-          }
           if (args.length && args[0].type === "MemberExpression") {
-            pith = args[0].object;
-            args0 = args.slice(1);
+            const seq = nargocallsequence(args.slice(1));
+            const advance = seq.pop();
+            path.replaceWith(
+              t.sequenceExpression([
+                ...seq,
+                t.callExpression(args[0], [
+                  args[0].object,
+                  t.identifier(sname),
+                  advance,
+                ]),
+              ])
+            );
           } else if (args.length > 1) {
-            pith = args[1];
-            args0 = args.slice(2);
-          } else return;
-          const sname0 = sname;
-          const aname0 = aname;
-          const sname1 = sname + "1";
-          const aname1 = aname + "1";
-          const seq0 = nargocallsequence(args0, sname0, aname0);
-          const advance0 = seq0.pop();
-          const seq1 = nargocallsequence(args1, sname1, aname1);
-          const advance1 = seq1.pop();
-          cep.replaceWith(
-            t.sequenceExpression([
-              ...seq0,
-              ...seq1,
-              t.callExpression(callee, [
-                pith,
-                t.identifier(sname0),
-                advance0,
-                t.identifier(sname1),
-                advance1,
-              ]),
-            ])
-          );
+            const seq = nargocallsequence(args.slice(2));
+            const advance = seq.pop();
+            path.replaceWith(
+              t.sequenceExpression([
+                ...seq,
+                t.callExpression(args[0], [
+                  args[1],
+                  t.identifier(sname),
+                  advance,
+                ]),
+              ])
+            );
+          } else throw new Error(node.type + " ni");
         }
       },
     },
   };
-  function nargocallsequence(arguments_, sname, aname) {
+  function nargocallsequence(arguments_) {
     const spreads = arguments_
       .filter((a) => a.type === "SpreadElement")
       .map((s) => t.memberExpression(s.argument, t.identifier("length")));
@@ -154,7 +120,7 @@ module.exports = function ({ types: t }) {
         : t.identifier(aname);
     }
   }
-  function nargoarms(params, sname, aname, bname) {
+  function nargoarms(params) {
     const spread =
       params.length &&
       (params[0].type === "RestElement" || params[0].type === "SpreadElement")
