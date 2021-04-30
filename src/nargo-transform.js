@@ -19,14 +19,6 @@ module.exports = function ({ types: t }) {
           path.node.params = [
             params[0],
             ...nargoarms(params.slice(1).reverse()),
-            t.identifier(
-              "φ" +
-                (path.node.id
-                  ? path.node.id.name
-                  : path.parent.type === "VariableDeclarator"
-                  ? path.parent.id.name
-                  : "na")
-            ),
           ];
       },
       CallExpression(path) {
@@ -114,11 +106,11 @@ module.exports = function ({ types: t }) {
       ),
       offset(arguments_.length),
     ];
-    function offset(i) {
-      return i
-        ? t.binaryExpression("+", t.identifier(aname), t.numericLiteral(i))
-        : t.identifier(aname);
-    }
+  }
+  function offset(i) {
+    return i
+      ? t.binaryExpression("+", t.identifier(aname), t.numericLiteral(i))
+      : t.identifier(aname);
   }
   function nargoarms(params) {
     const spread =
