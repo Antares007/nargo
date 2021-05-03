@@ -10,6 +10,7 @@ const cc = (o) => {
   C(c, o[3].o, ...o[3].ca);
 };
 const mb0 = (o, a, b) => C(a, [cb, C3o1, C3o2, { o, b, ba: [] }]);
+const mb00 = (o, a, b, c) => C(a, [cb, cc, C3o2, { o, b, c, ba: [], ca: [] }]);
 const mb1 = (o, a, b) => C(a, [C3o0, cb, C3o2, { o, b, ba: [] }]);
 
 const mb2 = (o, a, b1, b2, b) => C(a, [C3o0, C3o2, cb, { o, b, ba: [b1, b2] }]);
@@ -27,6 +28,7 @@ module.exports = {
   0: mb0,
   11: mb11,
   mb0,
+  mb00,
   mb1,
   mb2,
   mb01,

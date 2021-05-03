@@ -76,7 +76,13 @@ function run(o, n) {
 }
 // prettier-ignore
 function ray(o, p, o3) {
-  C(run, o, p, o3, equal, findIndex, update, reinsert, create, insert, mb[11], draw, mb[0]);
+  C(run, o,
+      p, o3, equal, findIndex,
+      update, reinsert,
+      create, insert,
+    mb[11],
+    draw,
+  mb[0]);
 }
 function ray0(o, ...p) {
   C(ray, o, p.join(", "), o[3]);
