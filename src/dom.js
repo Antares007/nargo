@@ -17,6 +17,7 @@ const example0 = (o) => {
           b(o, ...args) {
             C(o[1], ...args, document.createTextNode("A"), npith);
           },
+          ba: [],
         },
       ],
       "click"
