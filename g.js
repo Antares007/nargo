@@ -68,8 +68,8 @@ function S(o) {
 );
 function range(o, p, i, f, t) {
   const cp = i.codePointAt(p);
-  if (f - 1 < cp && cp < t + 1) C(o[0], cp, p + 1, i);
-  else C(o[1], p, i);
+  if (cp < f || t < cp) C(o[1], p, i);
+  else C(o[0], cp, p + 1, i);
 }
 function cp(o, p, i, cp) {
   if (cp === i.codePointAt(p)) C(o[0], cp, p + 1, i);
