@@ -6,6 +6,29 @@ module.exports = function ({ types: t }) {
   return {
     name: "nargo-transform",
     visitor: {
+      VariableDeclarator(path) {
+        if (
+          path.node.init.type === "BinaryExpression" &&
+          path.parent.kind === "var"
+        ) {
+          const nargs = nexpr(path.node.init).map((x) =>
+            typeof x === "number" ? t.numericLiteral(x) : t.identifier(x)
+          );
+          path.replaceWith(
+            t.variableDeclarator(
+              path.node.id,
+              t.arrowFunctionExpression(
+                [t.identifier(oname)],
+                t.callExpression(t.identifier("C"), [
+                  nargs.pop(),
+                  t.identifier(oname),
+                  ...nargs,
+                ])
+              )
+            )
+          );
+        }
+      },
       Function(path) {
         const params = path.node.params;
         if (
@@ -55,6 +78,19 @@ module.exports = function ({ types: t }) {
       },
     },
   };
+  function nexpr(e) {
+    const op = e.operator === "*" ? 0 : 1;
+    if (e.right.type === "Identifier") {
+      if (e.left.type === "Identifier")
+        return [e.left.name, e.right.name, op, 0, "mbo"];
+      else return [...nexpr(e.left), e.right.name, op, 0, "mbo"];
+    } else {
+      const rr = nexpr(e.right);
+      if (e.left.type === "Identifier")
+        return [e.left.name, ...rr, op, rr.length - 1, "mbo"];
+      else return [...nexpr(e.left), ...rr, op, rr.length - 1, "mbo"];
+    }
+  }
   function nargocallsequence(arguments_) {
     const spreads = arguments_
       .filter((a) => a.type === "SpreadElement")
