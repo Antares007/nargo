@@ -1,4 +1,4 @@
-const mbo = require("./mbo");
+const mbop = require("./mbop");
 function example(o) {
   function one(o) {
     C(o[0], 1);
@@ -22,15 +22,15 @@ function example(o) {
     one,
     0,
     0,
-    mbo,
+    mbop,
     add,
     0,
     0,
-    mbo,
+    mbop,
     (o) => C(o[3]),
     0,
     0,
-    mbo
+    mbop
   );
 }
 const o = [

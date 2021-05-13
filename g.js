@@ -1,5 +1,4 @@
-const mbo = require("./mbo");
-function C(...args) {}
+const mbop = require("./mbop");
 /*
           E → E + T               E
           E → T                  /|\
@@ -17,6 +16,7 @@ function C(...args) {}
 
 function E() {
   const ε = (o) => C(o[0]);
+  // var add = (l,op,r) =>
   const _add = (o, l, op, r, p, i) => C(o[0], l + r, p, i);
   const _mul = (o, l, op, r, p, i) => C(o[0], l * r, p, i);
   const _ds = (o, cp, p, i) => C(o[0], cp - 0x30, p, i);

@@ -3,20 +3,32 @@ module.exports = function ({ types: t }) {
   const bname = "β";
   const aname = "α";
   const sname = "Σ";
+  const opmap = { "*": 0, "+": 1, "&&": 2, "||": 3 };
+  function nexpr(e) {
+    const op = opmap[e.operator];
+    if (e.right.type === "Identifier") {
+      if (e.left.type === "Identifier")
+        return [e.left.name, e.right.name, op, 0, "mbop"];
+      else return [...nexpr(e.left), e.right.name, op, 0, "mbop"];
+    } else {
+      const rr = nexpr(e.right);
+      if (e.left.type === "Identifier")
+        return [e.left.name, ...rr, op, rr.length - 1, "mbop"];
+      else return [...nexpr(e.left), ...rr, op, rr.length - 1, "mbop"];
+    }
+  }
   return {
     name: "nargo-transform",
     visitor: {
-      VariableDeclarator(path) {
-        if (
-          path.node.init.type === "BinaryExpression" &&
-          path.parent.kind === "var"
-        ) {
-          const nargs = nexpr(path.node.init).map((x) =>
-            typeof x === "number" ? t.numericLiteral(x) : t.identifier(x)
-          );
-          path.replaceWith(
-            t.variableDeclarator(
-              path.node.id,
+      VariableDeclarator(dpath) {
+        const init = dpath.node.init;
+        const path = dpath.get("init");
+        if ("var" === dpath.parent.kind) {
+          if ("BinaryExpression" === init.type) {
+            const nargs = nexpr(init).map((x) =>
+              typeof x === "number" ? t.numericLiteral(x) : t.identifier(x)
+            );
+            path.replaceWith(
               t.arrowFunctionExpression(
                 [t.identifier(oname)],
                 t.callExpression(t.identifier("C"), [
@@ -25,8 +37,8 @@ module.exports = function ({ types: t }) {
                   ...nargs,
                 ])
               )
-            )
-          );
+            );
+          }
         }
       },
       Function(path) {
@@ -78,19 +90,6 @@ module.exports = function ({ types: t }) {
       },
     },
   };
-  function nexpr(e) {
-    const op = e.operator === "*" ? 0 : 1;
-    if (e.right.type === "Identifier") {
-      if (e.left.type === "Identifier")
-        return [e.left.name, e.right.name, op, 0, "mbo"];
-      else return [...nexpr(e.left), e.right.name, op, 0, "mbo"];
-    } else {
-      const rr = nexpr(e.right);
-      if (e.left.type === "Identifier")
-        return [e.left.name, ...rr, op, rr.length - 1, "mbo"];
-      else return [...nexpr(e.left), ...rr, op, rr.length - 1, "mbo"];
-    }
-  }
   function nargocallsequence(arguments_) {
     const spreads = arguments_
       .filter((a) => a.type === "SpreadElement")
