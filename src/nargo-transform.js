@@ -24,7 +24,10 @@ module.exports = function ({ types: t }) {
         const init = dpath.node.init;
         const path = dpath.get("init");
         if ("var" === dpath.parent.kind) {
-          if ("BinaryExpression" === init.type) {
+          if (
+            "BinaryExpression" === init.type ||
+            "LogicalExpression" === init.type
+          ) {
             const nargs = nexpr(init).map((x) =>
               typeof x === "number" ? t.numericLiteral(x) : t.identifier(x)
             );
@@ -38,6 +41,36 @@ module.exports = function ({ types: t }) {
                 ])
               )
             );
+          } else if ("ArrowFunctionExpression" === init.type) {
+            path.replaceWith(
+              t.arrowFunctionExpression(
+                [t.identifier(oname)],
+                t.callExpression(t.identifier("C"), [
+                  t.memberExpression(
+                    t.identifier(oname),
+                    t.numericLiteral(0),
+                    true
+                  ),
+                  init,
+                ])
+              )
+            );
+          } else if ("NumericLiteral" === init.type) {
+            path.replaceWith(
+              t.arrowFunctionExpression(
+                [t.identifier(oname)],
+                t.callExpression(t.identifier("C"), [
+                  t.memberExpression(
+                    t.identifier(oname),
+                    t.numericLiteral(0),
+                    true
+                  ),
+                  init,
+                ])
+              )
+            );
+          } else {
+            console.log(init.type);
           }
         }
       },

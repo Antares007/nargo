@@ -1,6 +1,44 @@
 const mbop = require("./mbop");
+//var oneo = 1;
+//var add2o = (a, b) => Co(a + b);
+//var two = oneo * oneo * add2o;
+//var threeo = oneo * two * add2o;
+//var three_o = () => threeo(Co);
+//var fouro = () => Co(4);
+//var four_o = () => (threeo * oneo * add2o)(C);
+//var fibo = () => Co();
+//C(fibo, 40, 0, 1);
+var Mα = S * α * S;
+var Mξ = S * ξ * S;
+var Mγ = S * γ * S;
+var Mτ = S * τ * S;
+var A = A * Mα * C + C;
+var C = C * Mξ * G + G;
+var G = G * Mγ * T + T;
+var T = T * Mτ * T + P;
+var P = openParen * A * closeParen + Qword;
+var Qword = Dword * Dword;
+var Dword = Word * Word;
+var Word = Byte * Byte;
+var M = α + ξ + γ + τ + S;
+var ws2 = tab + space + newline;
+var S = S * ws + ws;
+var Byte = () => 1;
+
+var α = (o, b) => (b === "α" ? C(o["*"], 1) : C(o["+"], 0));
+var ξ = (o, b) => (b === "ξ" ? C(o["*"], 1) : C(o["+"], 0));
+var γ = (o, b) => (b === "γ" ? C(o["*"], 1) : C(o["+"], 0));
+var τ = (o, b) => (b === "τ" ? C(o["*"], 1) : C(o["+"], 0));
 /*
-          E → E + T               E
+          α     → (o, p, i) => (i[p] === 'α' ? C(o["*"], p + 1, i) : C(o["+"], p, i))
+          ξ     → (o, p, i) => (i[p] === 'ξ' ? C(o["*"], p + 1, i) : C(o["+"], p, i))
+          γ     → (o, p, i) => (i[p] === 'γ' ? C(o["*"], p + 1, i) : C(o["+"], p, i))
+          τ     → (o, p, i) => (i[p] === 'τ' ? C(o["*"], p + 1, i) : C(o["+"], p, i))
+
+nar α = α 1
+
+
+          E → E + T               E                      
           E → T                  /|\
           T → T * F             E + T
           T → F                /   /|\
@@ -9,16 +47,23 @@ const mbop = require("./mbop");
                                   F  id
                                   |
                                  id
-  E → T * (plus * E * _add + ε)
-  T → F * (star * T * _mul + ε)
-  F → ( * E * ) * _31 + ds * _ds
+            E
+           /|\
+          E + T
+         /|\  |
+        E + T F
+        |   | |
+        T   F id
+        |   |
+        F   id
+        | 
+        id
 */
-
 function E() {
   const ε = (o) => C(o[0]);
   // var add = (l,op,r) =>
-  const _add = (o, l, op, r, p, i) => C(o[0], l + r, p, i);
-  const _mul = (o, l, op, r, p, i) => C(o[0], l * r, p, i);
+  const _add = (o, l, op, r, p, i) => C(o[0], { op, l, r }, p, i);
+  const _mul = (o, l, op, r, p, i) => C(o[0], { op, l, r }, p, i);
   const _ds = (o, cp, p, i) => C(o[0], cp - 0x30, p, i);
   const _31 = (o, l, v, r, p, i) => C(o[0], v, p, i);
 
@@ -32,15 +77,11 @@ function E() {
   const star = (o) => C(cp, o, "*".codePointAt(0));
   const plus = (o) => C(cp, o, "+".codePointAt(0));
 
-  const _if = (o) => C(str, o, "if");
-  const _then = (o) => C(str, o, "if");
-  const _else = (o) => C(str, o, "if");
-  var S = ws * _if * E;
   return E;
 }
 function example(o) {
   const ε = (o) => C(o[0]);
-  C(E(), o, 0, `(3+6)*9`);
+  C(E(), o, 0, `3+6+9`);
   var AB = a + b;
   var ABS = AB * ABS + ε;
   C(ABS, o, 0, "baababb");
