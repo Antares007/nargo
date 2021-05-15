@@ -1,4 +1,47 @@
+//var S = (o, Σ, α) =>
+//  c(mbop, o, ws, _init, 0, 0, mbop, S, ws, 0, 0, mbop,_next,
+//  0, 0, mbop, 3, 8);
 const mbop = require("./mbop");
+
+function Sa(p, b, a) {
+  b[a++] = ws;
+  b[a++] = _init;
+  b[a++] = mb0;
+
+  b[a++] = Sa; //1
+  b[a++] = ws; //2
+  b[a++] = mb0; //3
+  b[a++] = _next; //4
+  b[a++] = mb0;
+
+  b[a++] = m34;
+
+  b[--a](p, b, a);
+}
+
+const opr = {
+  "*": 0,
+  "+": 1,
+  "&&": 2,
+  "||": 3,
+  0(p, b, a) {
+    const len = b[--a];
+    const cnar = b[--a];
+    const oa = a;
+    const nargs = b.slice((a = a - len), oa);
+    const nar = b[--a];
+    nar([(p, b, a) => p[3][1](p[3], b, a), [p, b, nargs]], b, a);
+  },
+  1(o, b, a) {
+    C(mbop, o, 1);
+  },
+  2(o, b, a) {
+    C(mbop, o, 2);
+  },
+  3(o, b, a) {
+    C(mbop, o, 3);
+  },
+};
 //var oneo = 1;
 //var add2o = (a, b) => Co(a + b);
 //var two = oneo * oneo * add2o;
@@ -8,27 +51,35 @@ const mbop = require("./mbop");
 //var four_o = () => (threeo * oneo * add2o)(C);
 //var fibo = () => Co();
 //C(fibo, 40, 0, 1);
+function args() {}
 var Mα = S * α * S;
 var Mξ = S * ξ * S;
 var Mγ = S * γ * S;
 var Mτ = S * τ * S;
-var A = A * Mα * C + C;
-var C = C * Mξ * G + G;
-var G = G * Mγ * T + T;
-var T = T * Mτ * T + P;
+var A = C || A * Mα * C;
+var C = G || C * Mξ * G;
+var G = T || G * Mγ * T;
+var T = P || T * Mτ * T;
 var P = openParen * A * closeParen + Qword;
 var Qword = Dword * Dword;
 var Dword = Word * Word;
 var Word = Byte * Byte;
 var M = α + ξ + γ + τ + S;
 var ws2 = tab + space + newline;
-var S = S * ws + ws;
+var _init = (o, b, a) => C(o[opr["||"]], a, b, a);
+var _next = (o, b, a) => C(o[opr["||"]]);
+var S = ws * _init || S * ws * _next;
 var Byte = () => 1;
 
-var α = (o, b) => (b === "α" ? C(o["*"], 1) : C(o["+"], 0));
-var ξ = (o, b) => (b === "ξ" ? C(o["*"], 1) : C(o["+"], 0));
-var γ = (o, b) => (b === "γ" ? C(o["*"], 1) : C(o["+"], 0));
-var τ = (o, b) => (b === "τ" ? C(o["*"], 1) : C(o["+"], 0));
+var α = (o, b, a) =>
+  b[a] === "α" ? C(o[opr["*"]], b, a + 1) : C(o[opr["+"]], b, a);
+var ξ = (o, b, a) =>
+  b[a] === "ξ" ? C(o[opr["*"]], b, a + 1) : C(o[opr["+"]], b, a);
+var γ = (o, b, a) =>
+  b[a] === "γ" ? C(o[opr["*"]], b, a + 1) : C(o[opr["+"]], b, a);
+var τ = (o, b, a) =>
+  b[a] === "τ" ? C(o[opr["*"]], b, a + 1) : C(o[opr["+"]], b, a);
+
 /*
           α     → (o, p, i) => (i[p] === 'α' ? C(o["*"], p + 1, i) : C(o["+"], p, i))
           ξ     → (o, p, i) => (i[p] === 'ξ' ? C(o["*"], p + 1, i) : C(o["+"], p, i))
