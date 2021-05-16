@@ -1,10 +1,10 @@
 function one(o, b, a) {
-  o[0](o, b, advance(b, a, 1));
+  o[0](o, b, Args(b, a, 1));
 }
 function add2(o, b, a) {
   const r = b[--a];
   const l = b[--a];
-  o[0](o, b, advance(b, a, l + r));
+  o[0](o, b, Args(b, a, l + r));
 }
 function cp(o, b, a) {
   const cp = b[--a] | 0;
@@ -13,14 +13,14 @@ function cp(o, b, a) {
   if (cp === b[buf].codePointAt(b[pos])) (b[pos] += 1), o[0](o, b, a);
   else o[1](o, b, a);
 }
-function evalnexp(o, b, a) {
+function Nval(o, b, a) {
   b[--a](o, b, a);
 }
 function S(o, b, a) {
-  evalnexp(
+  Nval(
     o,
     b,
-    advanceSexp(b, a, [
+    Sexp(b, a, [
       0, //
       [0, Tb, _init],
       [0, S, Ta, _next],
@@ -35,12 +35,19 @@ function Ta(o, b, a) {
 function Tb(o, b, a) {
   (b[a++] = 0x62), cp(o, b, a);
 }
+function Tc(o, b, a) {
+  (b[a++] = 0x63), cp(o, b, a);
+}
 function example(o, b, a) {
-  //a = advance(b, a, 10, 20, 30);
-  //a = advanceSexp(b, a, [0, add2, add2]);
-  //b[--a](o, b, a);
-  a = advance(b, a, 0, "baaaaaa");
-  Tb(o, b, a);
+  Nval(
+    o,
+    b,
+    Sexp(
+      b,
+      Args(b, a, 0, "baaaaaa"), //
+      [0, Tb, Ta, Ta, [1, [0, Tc, Ta, Ta, Ta], [0, Tb, Ta, Ta, Ta]]]
+    )
+  );
 }
 const o = [
   function ray0(o, b, a) {
@@ -57,17 +64,17 @@ const o = [
   },
 ];
 example(o, [], 0);
-function advance(b, a, ...args) {
+function Args(b, a, ...args) {
   for (let v of args) b[a++] = v;
   return a;
 }
-function advanceSexp(b, a, sexp) {
+function Sexp(b, a, sexp) {
   if (Array.isArray(sexp)) {
     const op = sexp.shift();
-    a = advanceSexp(b, a, sexp.shift());
+    a = Sexp(b, a, sexp.shift());
     for (let e of sexp) {
       const oa = a;
-      a = advanceSexp(b, a, e);
+      a = Sexp(b, a, e);
       const n = a - oa;
       b[a++] = n;
       b[a++] = op;
