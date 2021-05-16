@@ -7,15 +7,12 @@ function Sa(p, b, a) {
   b[a++] = ws;
   b[a++] = _init;
   b[a++] = mb0;
-
-  b[a++] = Sa; //1
-  b[a++] = ws; //2
-  b[a++] = mb0; //3
-  b[a++] = _next; //4
+  b[a++] = Sa;
+  b[a++] = ws;
   b[a++] = mb0;
-
-  b[a++] = m34;
-
+  b[a++] = _next;
+  b[a++] = mb0;
+  b[a++] = mb34;
   b[--a](p, b, a);
 }
 
@@ -24,13 +21,12 @@ const opr = {
   "+": 1,
   "&&": 2,
   "||": 3,
-  0(p, b, a) {
-    const len = b[--a];
+  0(p, b, a, ray, len) {
     const cnar = b[--a];
     const oa = a;
     const nargs = b.slice((a = a - len), oa);
     const nar = b[--a];
-    nar([(p, b, a) => p[3][1](p[3], b, a), [p, b, nargs]], b, a);
+    nar([(p, b, a) => p[3][1](p[3], b, a), [p, cnar, nargs]], b, a);
   },
   1(o, b, a) {
     C(mbop, o, 1);

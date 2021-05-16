@@ -1,51 +1,80 @@
-const mbop = require("./mbop");
-function example(o) {
-  function one(o) {
-    C(o[0], 1);
-  }
-  function add(o, a, b) {
-    C(o[0], a + b);
-  }
-  function mul(o, a, b) {
-    C(o[0], a * b);
-  }
-  var two = one * one * add;
-  var aha = two * (one * one * add) * add;
-
-  C(aha, o);
-
-  //
-  C(
-    (o, n) => C(n, o),
-    o, //
-    one,
-    one,
-    0,
-    0,
-    mbop,
-    add,
-    0,
-    0,
-    mbop,
-    (o) => C(o[3]),
-    0,
-    0,
-    mbop
-  );
+function one(o, b, a) {
+  o[0](o, b, advance(b, a, 1));
+}
+function add2(o, b, a) {
+  const r = b[--a];
+  const l = b[--a];
+  o[0](o, b, advance(b, a, l + r));
+}
+function var1(o, b, a) {
+  const in_a = b[--a];
+  const in_b = b[--a];
+  if (in_b[in_a] === "a") o[0](o, b, advance(b, a, in_b, in_a + 1));
+  else o[1](o, b, advance(b, a, in_b, in_a));
+}
+function S(o, b, a) {
+  const sexp = [
+    0, //
+    [0, Tb, _init],
+    [0, S, Ta, _next],
+  ];
+  b[advance(b, a, sexp) - 1](o, b, a);
+}
+function Tb(o, b, a) {
+  str(o, b, a);
+}
+function Ta() {}
+function _init() {}
+function _next() {}
+function example(o, b, a) {
+  a = advanceSexp(b, a, [0, one, one, add2]);
+  b[--a](o, b, a);
 }
 const o = [
-  function ray0(o, ...args) {
-    console.log(0, args);
+  function ray0(o, b, a) {
+    b.length = a;
+    console.log(0, b);
   },
-  function ray1(o, ...args) {
-    console.log(1, args);
+  function ray1(o, b, a) {
+    b.length = a;
+    console.log(1, b);
   },
-  function ray2(o, ...args) {
-    console.log(2, args);
+  function ray2(o, b, a) {
+    b.length = a;
+    console.log(2, b);
   },
-  function ray3(o, ...args) {
-    console.log(3, args);
-  },
-  {},
 ];
 example(o, [], 0);
+function advance(b, a, ...args) {
+  for (let v of args) b[a++] = v;
+  return a;
+}
+function advanceSexp(b, a, sexp) {
+  if (Array.isArray(sexp)) {
+    const op = sexp.shift();
+    a = advanceSexp(b, a, sexp.shift());
+    for (let e of sexp) {
+      const oa = a;
+      a = advanceSexp(b, a, e);
+      const n = a - oa;
+      b[a++] = n;
+      b[a++] = op;
+      b[a++] = mbop;
+    }
+  } else b[a++] = sexp;
+  return a;
+}
+function mbop(o, b, a) {
+  const op = b[--a];
+  const len = b[--a];
+  const oa = a;
+  const nexp = b.slice((a = a - len), oa);
+  const nar = b[--a];
+  const p = [...o, o, nexp];
+  p[op] = cbo;
+  nar(p, b, a);
+}
+function cbo(o, b, a) {
+  for (let v of o[o.length - 1]) b[a++] = v;
+  b[--a](o[o.length - 2], b, a);
+}
