@@ -6,29 +6,41 @@ function add2(o, b, a) {
   const l = b[--a];
   o[0](o, b, advance(b, a, l + r));
 }
-function var1(o, b, a) {
-  const in_a = b[--a];
-  const in_b = b[--a];
-  if (in_b[in_a] === "a") o[0](o, b, advance(b, a, in_b, in_a + 1));
-  else o[1](o, b, advance(b, a, in_b, in_a));
+function cp(o, b, a) {
+  const cp = b[--a] | 0;
+  const buf = a - 1;
+  const pos = a - 2;
+  if (cp === b[buf].codePointAt(b[pos])) (b[pos] += 1), o[0](o, b, a);
+  else o[1](o, b, a);
+}
+function evalnexp(o, b, a) {
+  b[--a](o, b, a);
 }
 function S(o, b, a) {
-  const sexp = [
-    0, //
-    [0, Tb, _init],
-    [0, S, Ta, _next],
-  ];
-  b[advance(b, a, sexp) - 1](o, b, a);
+  evalnexp(
+    o,
+    b,
+    advanceSexp(b, a, [
+      0, //
+      [0, Tb, _init],
+      [0, S, Ta, _next],
+    ])
+  );
 }
-function Tb(o, b, a) {
-  str(o, b, a);
-}
-function Ta() {}
 function _init() {}
 function _next() {}
+function Ta(o, b, a) {
+  (b[a++] = 0x61), cp(o, b, a);
+}
+function Tb(o, b, a) {
+  (b[a++] = 0x62), cp(o, b, a);
+}
 function example(o, b, a) {
-  a = advanceSexp(b, a, [0, one, one, add2]);
-  b[--a](o, b, a);
+  //a = advance(b, a, 10, 20, 30);
+  //a = advanceSexp(b, a, [0, add2, add2]);
+  //b[--a](o, b, a);
+  a = advance(b, a, 0, "baaaaaa");
+  Tb(o, b, a);
 }
 const o = [
   function ray0(o, b, a) {
