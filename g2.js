@@ -6,8 +6,23 @@ function add2(o, b, a) {
   const l = b[--a];
   o[0](o, b, Args(b, a, [l + r]));
 }
+
+function eq(o, b, a) {
+  o[((b[--a] === b[--a]) | 0) ^ 1](o, b, a);
+}
+function ppp(o, b, a) {
+  b[a - 2]++;
+  o[0](o, b, a);
+}
+function la(o, b, a) {
+  const la = b[a - 1].codePointAt(b[a - 2]) | 0;
+  b[a++] = la;
+  o[0](o, b, a);
+}
 function cp(o, b, a) {
-  const cp = b[--a] | 0;
+  //const cp = b[--a];
+  //Nval(o, b, Sexp(b, a, [0, la, [8, cp, eq], ppp]));
+  const cp = b[--a];
   const buf = a - 1;
   const pos = a - 2;
   if (cp === (b[buf].codePointAt(b[pos]) | 0)) (b[pos] += 1), o[0](o, b, a);
@@ -26,37 +41,37 @@ function _S0(o, b, a) {
 }
 function _S1(o, b, a) {}
 function Ta(o, b, a) {
-  Nval(o, b, Sexp(b, a, [8, 0x61, cp]));
+  Nval(o, b, Sexp(b, a, [0, la, [8, 0x61, eq], ppp]));
 }
 function Tb(o, b, a) {
-  Nval(o, b, Sexp(b, a, [8, 0x62, cp]));
+  Nval(o, b, Sexp(b, a, [0, la, [8, 0x62, eq], ppp]));
 }
 function Tc(o, b, a) {
-  Nval(o, b, Sexp(b, a, [8, 0x63, cp]));
+  Nval(o, b, Sexp(b, a, [0, la, [8, 0x63, eq], ppp]));
 }
 function ε(o, b, a) {
   o[0](o, b, a);
 }
-//prettier-ignore
+
 function example(o, b, a) {
-  const oa = Args(b, a, [0, "baacb"])
-  a = Sexp(b, oa,
-    [0,
-      Tb,
-      Ta,
-      Ta,
-      [1, Tc, Tb, ε],
-      [1, Tc, Tb, ε],
-    ]
-  )
-  const nexp = b.slice(oa, a).map(v => v.name ? v.name : v).join(",");
-  console.log(nexp)
-  Nval(o, b, a)
+  const args = Args(b, a, [0, "baabc"]);
+  a = Sexp(b, args, [0, Tb, Ta, Ta, [1, Tc, Tc]]);
+  const nexp = b
+    .slice(args, a)
+    .map((v) => (v.name ? v.name : v))
+    .join(",");
+  console.log(nexp);
+  Nval(o, b, a);
+  //Tb,Ta,1,0,mbop,
+  //Ta,1,0,mbop,
+  //Tc,Tb,1,1,mbop,ε,1,1,mbop,9,0,mbop,
+  //Tc,Tb,1,1,mbop,ε,1,1,mbop,9,0,mbop
+
   const exp = `
   Tb * Ta * Ta * (Tc + Tb + ε)
   `;
 
-  console.log(exp)
+  console.log(exp);
 }
 const o = [
   function ray0(o, b, a) {
