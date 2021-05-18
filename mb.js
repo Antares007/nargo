@@ -1,56 +1,42 @@
-const C3o0 = (o) => C(o[3].o[0]);
-const C3o1 = (o) => C(o[3].o[1]);
-const C3o2 = (o) => C(o[3].o[2]);
-const cb = (o) => {
-  const b = o[3].b;
-  C(b, o[3].o, ...o[3].ba);
+module.exports = { Nval, mb };
+// prettier-ignore
+const mbrays = {
+  1(o, b, a) { (b[a++] = 1), mbray(o, b, a); },
+  2(o, b, a) { (b[a++] = 2), mbray(o, b, a); },
+  3(o, b, a) { (b[a++] = 3), mbray(o, b, a); },
 };
-const cc = (o) => {
-  const c = o[3].c;
-  C(c, o[3].o, ...o[3].ca);
-};
-const mb0 = (o, a, b) => C(a, [cb, C3o1, C3o2, { o, b, ba: [] }]);
-const mb00 = (o, a, b, c) => C(a, [cb, cc, C3o2, { o, b, c, ba: [], ca: [] }]);
-const mb1 = (o, a, b) => C(a, [C3o0, cb, C3o2, { o, b, ba: [] }]);
-
-const mb2 = (o, a, b1, b2, b) => C(a, [C3o0, C3o2, cb, { o, b, ba: [b1, b2] }]);
-const mb33 = (o, a, b1, b2, b3, b, c1, c2, c3, c) =>
-  C(a, [cb, cc, C3o2, { o, b, c, ba: [b1, b2, b3], ca: [c1, c2, c3] }]);
-const mb01 = (o, a, b, c1, c) =>
-  C(a, [cb, cc, C3o2, { o, b, c, ba: [], ca: [c1] }]);
-const mb11 = (o, a, b1, b, c1, c) =>
-  C(a, [cb, cc, C3o2, { o, b, c, ba: [b1], ca: [c1] }]);
-const mb23 = (o, a, b1, b2, b, c1, c2, c3, c) =>
-  C(a, [cb, cc, C3o2, { o, b, c, ba: [b1, b2], ca: [c1, c2, c3] }]);
-const mb32 = (o, a, b1, b2, b3, b, c1, c2, c) =>
-  C(a, [cb, cc, C3o2, { o, b, c, ba: [b1, b2, b3], ca: [c1, c2] }]);
-module.exports = {
-  0: mb0,
-  11: mb11,
-  mb0,
-  mb00,
-  mb1,
-  mb2,
-  mb01,
-  mb11,
-  mb33,
-  mb23,
-  mb32,
-  cb,
-  C3o0,
-  C3o1,
-  C3o2,
-};
-const example = (o) => {
-  const one = (o) => C(o[0], 1);
-  const exp = (o) =>
-    C(
-      o[2],
-      (o) => C(o[0], 1),
-      (o) => C(o[0], 2)
-    );
-  const add = (o, a) => C(o[0], a + 2);
-  C(o[0], 1, 2, 3);
-  C(mb0, o, one, add, mb0, add, mb0, add);
-};
-//example([(o, ...args) => console.log(args)], [], 0);
+function mbray(o, b, a) {
+  for (let v of o[3][b[--a]]) b[a++] = v;
+  Nval(o[3][0], b, a);
+}
+function Nval(o, b, a) {
+  // prettier-ignore
+  //console.log(b.slice(0,a).map(a=>typeof a==="number"?'0x'+a.toString(16):a.name?a.name:a).join(" "));
+  b[--a](o, b, a);
+}
+function r0(o, b, a) {
+  o[3][0][0](o[3][0], b, a);
+}
+function r1(o, b, a) {
+  o[3][0][1](o[3][0], b, a);
+}
+function r2(o, b, a) {
+  o[3][0][2](o[3][0], b, a);
+}
+function mb(o, b, a) {
+  let opcode = b[--a] | 0;
+  let ray = 0;
+  let pos = 0;
+  const p = [r0, r1, r2, [o]];
+  while (opcode) {
+    const len = opcode & 0x0f;
+    if (len) {
+      const oa = a;
+      const nexp = b.slice((a = a - len), oa);
+      p[3].push(nexp);
+      p[ray] = mbrays[++pos];
+    }
+    (opcode >>= 4), ray++;
+  }
+  Nval(p, b, a);
+}
