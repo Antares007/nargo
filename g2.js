@@ -1,3 +1,17 @@
+const mbrays = {
+  0(o, b, a) {
+    for (let v of o[o.length - 1][0]) b[a++] = v;
+    b[--a](o[o.length - 2], b, a);
+  },
+  1(o, b, a) {
+    for (let v of o[o.length - 1][1]) b[a++] = v;
+    b[--a](o[o.length - 2], b, a);
+  },
+  2(o, b, a) {
+    for (let v of o[o.length - 1][2]) b[a++] = v;
+    b[--a](o[o.length - 2], b, a);
+  },
+};
 function one(o, b, a) {
   o[0](o, b, Args(b, a, [1]));
 }
@@ -8,14 +22,16 @@ function add2(o, b, a) {
 }
 
 function eq(o, b, a) {
-  o[((b[--a] === b[--a]) | 0) ^ 1](o, b, a);
+  o[(b[--a] === b[--a]) | 0](o, b, a);
 }
 function ppp(o, b, a) {
+  console.log("ppp:", b[a - 2]);
   b[a - 2]++;
   o[0](o, b, a);
 }
 function la(o, b, a) {
   const la = b[a - 1].codePointAt(b[a - 2]) | 0;
+  console.log("la:" + b[a - 1][b[a - 2]]);
   b[a++] = la;
   o[0](o, b, a);
 }
@@ -41,31 +57,42 @@ function _S0(o, b, a) {
 }
 function _S1(o, b, a) {}
 function Ta(o, b, a) {
-  Nval(o, b, Sexp(b, a, [0, la, [8, 0x61, eq], ppp]));
+  Nval(o, b, Sexp(b, a, [0, la, [1, [8, 0x61, eq], ppp]]));
 }
 function Tb(o, b, a) {
   Nval(o, b, Sexp(b, a, [0, la, [8, 0x62, eq], ppp]));
 }
 function Tc(o, b, a) {
+  console.log("Tc");
   Nval(o, b, Sexp(b, a, [0, la, [8, 0x63, eq], ppp]));
 }
 function ε(o, b, a) {
   o[0](o, b, a);
 }
-
+function eqa(o, b, a) {
+  Nval(o, b, Args(b, a, [0x61, eq]));
+}
+function eqb(o, b, a) {
+  Nval(o, b, Args(b, a, [0x62, eq]));
+}
+function eqc(o, b, a) {
+  Nval(o, b, Args(b, a, [0x63, eq]));
+}
+function r1id(o, b, a) {
+  o[1](o, b, a);
+}
 function example(o, b, a) {
   const args = Args(b, a, [0, "baabc"]);
-  a = Sexp(b, args, [0, Tb, Ta, Ta, [1, Tc, Tc]]);
+  a = Sexp(b, args, [0, la, ["m", eqb, r1id, ppp]]);
   const nexp = b
     .slice(args, a)
     .map((v) => (v.name ? v.name : v))
     .join(",");
   console.log(nexp);
   Nval(o, b, a);
-  //Tb,Ta,1,0,mbop,
-  //Ta,1,0,mbop,
-  //Tc,Tb,1,1,mbop,ε,1,1,mbop,9,0,mbop,
-  //Tc,Tb,1,1,mbop,ε,1,1,mbop,9,0,mbop
+
+  const sargs = [one, one, 1, mb, add2, 1, mb, one, 1, mb, add2, 1, mb];
+  Nval(o, sargs, sargs.length);
 
   const exp = `
   Tb * Ta * Ta * (Tc + Tb + ε)
@@ -130,4 +157,22 @@ function mbop(o, b, a) {
 function cbo(o, b, a) {
   for (let v of o[o.length - 1]) b[a++] = v;
   b[--a](o[o.length - 2], b, a);
+}
+function mb(o, b, a) {
+  let opcode = b[--a] | 0;
+  let ray = 0;
+  let pos = 0;
+  const p = [...o, o, []];
+  while (opcode) {
+    const len = opcode & 0x0f;
+    if (len) {
+      pos++;
+      const oa = a;
+      const nexp = b.slice((a = a - len), oa);
+      p[p.length - 1][ray] = nexp;
+      p[ray] = mbrays[ray];
+    }
+    (opcode >>= 4), ray++;
+  }
+  Nval(p, b, a);
 }
