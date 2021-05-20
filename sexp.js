@@ -1,10 +1,9 @@
 const { Nval, mb } = require("./mb");
-module.exports = { Sexp, Nvalsexp, Nval, mb };
+module.exports = { Sexp, sexp: Nvalsexp, mb, Nval };
 function Nvalsexp(o, b, a, sexp) {
   const oa = a;
   a = Sexp(b, a, sexp);
-  // prettier-ignore
-  console.log('sexp:',b.slice(oa,a).map(a=>typeof a==="number"?'0x'+a.toString(16):a.name?a.name:a).join(" "));
+  console.log(">", rexp(o, b, a));
   Nval(o, b, a);
 }
 function Sexp(b, a, sexp) {
@@ -34,4 +33,40 @@ function Sexp(b, a, sexp) {
     }
   } else b[a++] = sexp;
   return a;
+}
+function estr(e) {
+  return (e.name ? e.name : e) + "";
+}
+function rexp(o, b, a) {
+  if (mb === b[a - 1]) {
+    --a;
+    let opcode = b[--a];
+    let str = "";
+    let ray = 0;
+    let count = 0;
+    while (opcode) {
+      const n = opcode & 0xf;
+      if (n) {
+        const oa = a;
+        const s = b.slice((a = a - n), oa);
+        const p = 1 < n;
+        str =
+          str +
+          String.fromCodePoint(ray + "₀".codePointAt(0)) +
+          (p ? "(" : "") +
+          rexp(o, s, s.length) +
+          (p ? ")" : "");
+        count++;
+      }
+      opcode >>= 4;
+      ray++;
+    }
+    return rexp(o, b, a) + (count > 1 ? "{" + str + "}" : str);
+  } else
+    return a === 1
+      ? estr(b[0])
+      : `[${b
+          .slice(o, a - 1)
+          .map(estr)
+          .join(", ")}]${estr(b[a - 1])}`;
 }
