@@ -35,7 +35,7 @@ function Sexp(b, a, sexp) {
   return a;
 }
 function estr(e) {
-  return (e.name ? e.name : e) + "";
+  return typeof e === "function" ? e.name : JSON.stringify(e);
 }
 function rexp(o, b, a) {
   if (mb === b[a - 1]) {
@@ -61,12 +61,12 @@ function rexp(o, b, a) {
       opcode >>= 4;
       ray++;
     }
-    return rexp(o, b, a) + (count > 1 ? "{" + str + "}" : str);
+    return rexp(o, b, a) + str;
   } else
     return a === 1
       ? estr(b[0])
-      : `[${b
+      : `${estr(b[a - 1])}(${b
           .slice(o, a - 1)
           .map(estr)
-          .join(", ")}]${estr(b[a - 1])}`;
+          .join(", ")})`;
 }

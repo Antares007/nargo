@@ -14,7 +14,19 @@ const o = [
   },
 ];
 let count = 0;
+
+const v = vvv(lt, [8, 1, 2, 3, "hey", r0]);
+function cp(o, b, a) {
+  sexp(o, b, a - 1, [9, [0, la, [8, b[a - 1], eq]], r1, ppp]);
+}
+function cpr(o, b, a) {
+  sexp(o, b, a - 2, [9, [0, la, [8, b[a - 2], b[a - 1], range]], ppp, r1]);
+}
+v(o, ["lt(1,2)", 0], 2);
 example(o, [], 0);
+function vvv(f, e) {
+  return (o, b, a) => sexp(o, b, a, [8, "and", r2]);
+}
 function lt(o, b, a) {
   const r = b[--a];
   const l = b[--a];
@@ -36,29 +48,36 @@ function gcd(o, b, a) {
     [8, x, r1],
   ]);
 }
-// ( x > y /\ x' = x - y /\ y' = y) \/ ( y > x /\ x' = x /\ y' = y - x)
-// 0x6 0x9 lt 0x6 0x3 gcd 0x30 mb
-// 0x9 0x6 lt 0x-3 0x9 gcd 0x30 mb 0x8 mb
-// 0x6 r1 0x2 mb
+function fib(o, b, a) {
+  const n = b[--a];
+  const c = b[--a];
+  const p = b[--a];
+  sexp(o, b, a, [9, [8, n, 0, eq], [8, c, p + c, n - 1, fib], [8, p, c, r1]]);
+}
+function N(o, b, a) {
+  sexp(o, b, a, [8, 0x30, 0x39, cpr]);
+}
+//> gcd(99, 33)
+//> lt(33, 99)₁(gcd(33, 66))₀(lt(99, 33)₁(gcd(-66, 99)))₀(r1(33))
+//> lt(66, 33)₁(gcd(66, -33))₀(lt(33, 66)₁(gcd(33, 33)))₀(r1(66))
+//> lt(33, 33)₁(gcd(33, 0))₀(lt(33, 33)₁(gcd(0, 33)))₀(r1(33))
 function example(o, b, a) {
-  sexp(o, b, a, [0, one, two, add, two, add, two, add]);
-  const cp = (o, b, a) =>
-    sexp(o, b, a - 1, [9, [0, la, [8, b[a - 1], eq]], r1, ppp]);
-  const r = (o, b, a) =>
-    sexp(o, b, a - 2, [9, [0, la, [8, b[a - 2], b[a - 1], range]], ppp, r1]);
+  sexp(o, b, a, [8, 0, 1, 10, fib]);
+  sexp(o, b, a, [8, 99, 33, gcd]);
+  //7 sexp(o, b, a, [0, one, two, add, two, add, two, add]);
   const ε = r0;
 
-  sexp(o, b, a, [8, 99, 33, gcd]);
-  sexp(o, b, a, [9, one, two, [9, [9, one, two, tree], two, tree]]);
+  //sexp(o, b, a, [9, one, two, [9, [9, one, two, tree], two, tree]]);
 
   //sexp(o, b, a, [0, [0, one, two, add], tree, add, tree, add]);
-  //sexp(o, b, a, [
-  //  0, //
-  //  [8, "bada", 0, r0], //
-  //  [8, 0x62, cp], //
-  //  [1, [8, 0x61, cp], [8, 0x62, cp], [8, 0x63, cp]], //
-  //  [1, [8, 0x61, cp], [8, 0x62, cp], [8, 0x63, cp], ε], //
-  //]);
+  sexp(o, b, a, [
+    0, //
+    [8, "abcdef", 0, r0], //
+    [8, 6, lan],
+    //[8, 0x62, cp], //
+    //[1, [8, 0x61, cp], [8, 0x62, cp], [8, 0x63, cp]], //
+    //[1, [8, 0x61, cp], [8, 0x62, cp], [8, 0x63, cp], ε], //
+  ]);
   //const atom = (o, b, a) => sexp(o, b, a, [8, "atom", r0]);
   //atom(o, b, a);
 
@@ -115,6 +134,14 @@ function Args(b, a, args) {
 function ppp(o, b, a) {
   b[a - 1]++;
   o[0](o, b, a);
+}
+function lan(o, b, a) {
+  const n = b[--a];
+  const txt = a - 2,
+    pc = a - 1;
+  b[a] = b[txt].slice(b[pc], b[pc] + n);
+  b[pc] += b[a].length;
+  o[(b[a].length !== n) | 0](o, b, a + 1);
 }
 function la(o, b, a) {
   const la = b[a - 2].codePointAt(b[a - 1]) | 0;
