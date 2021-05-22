@@ -61,7 +61,8 @@ function rexp(o, b, a) {
       opcode >>= 4;
       ray++;
     }
-    return rexp(o, b, a) + str;
+    const q = 1 < count;
+    return rexp(o, b, a) + (q ? "{" : "") + str + (q ? "}" : "");
   } else
     return a === 1
       ? estr(b[0])
