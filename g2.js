@@ -1,43 +1,116 @@
 const { sexp, Sexp, Nval, mb } = require("./sexp");
-
-// prettier-ignore
 (function example(o, b, a) {
-  sexp(o, b, a, [1, [8, "a₀b₀c₀d", 0, r1], Exp]);
+  E(o, ["a₄b₂c₈d", 0, 0], 3);
+  //Exp(o, ["a₀b₁c₁d", 0], 2)
+  //Exp(o, ["(a₀b₀c₀d)", 0], 2)
+  //sexp(o, b, a, [1, [8, "a₀b₀c₀d", 0, r1], Exp]);
   //sexp(o, b, a, [8, 0, 1, 10, fib]);
   //sexp(o, b, a, [8, 18, 12, gcd]);
   //sexp(o, b, a, [0, one, two, add, two, add, two, add]);
-})([(o, b, a) => ((b.length = a), console.log(0, b)),
+})(
+  [
+    (o, b, a) => ((b.length = a), console.log(0, b)),
     (o, b, a) => ((b.length = a), console.log(1, b)),
-    (o, b, a) => ((b.length = a), console.log(2, b))], [], 0);
+    (o, b, a) => ((b.length = a), console.log(2, b)),
+  ],
+  [],
+  0
+);
+// Exp    = Ei(0)
+// Ei(p)  = A ₁ El(p)
+// El(p)  = O(p) ₁ Ei(p+1) ₁ reduceL ₁ El(p)
+//        ₀ r1
+// O(p)   = la ₁ eq(0x2080+p) ₁ la ₁ mo ₁ ppp
+// A      = Number
+//        ₀ PE
+// PE     = OpenParen ₁ Exp ₁ CloseParen
 
+function E(o, b, a) {
+  const p = b[--a];
+  sexp(o, b, a, [1, A, [8, p, E_]]);
+}
+function laop(o, b, a) {
+  sexp(o, b, a, [1, la, [8, 0x2080, 0x2089, range], la, mo]);
+}
+function E_(o, b, a) {
+  const p = b[--a];
+  sexp(o, b, a, [0, [1, laop, [8, p, E__]], r1]);
+}
+function E__(o, b, a) {
+  const p = b[--a];
+  const c = b[--a];
+  if (c < p) sexp(o, b, a, r1);
+  else sexp(o, b, a, [1, ppp, [8, c, c + 1, E], reduceL, [8, p, E_]]);
+}
+
+function A(o, b, a) {
+  sexp(o, b, a, [0, Number, PE]);
+}
+function PE(o, b, a) {
+  sexp(o, b, a, [1, OpenParen, [8, 0, E], CloseParen]);
+}
+
+// E = E + T / T
+//
+// E  = T E_
+// E_ = + T E_ / ε
+// T  = F T_
+// T_ = + F T_ / ε
 function Atom(o, b, a) {
-  sexp(o, b, a, [
-    0,
-    [1, la, [8, 0x61, 0x6f, range], ppp],
-    //    [1, la, [8, 40, eq], ppp, Exp, la, [8, 41, eq], ppp],
-  ]);
+  sexp(o, b, a, [0, Number, PExp]);
+}
+function Number(o, b, a) {
+  sexp(o, b, a, [1, la, [8, 0x61, 0x6f, range], la, mn, ppp]);
+}
+function mn(o, b, a) {
+  sexp(o, b, --a, [8, String.fromCodePoint(b[a]), r1]);
+}
+function PExp(o, b, a) {
+  sexp(o, b, a, [1, OpenParen, Exp, CloseParen]);
 }
 function Op(o, b, a) {
-  sexp(o, b, a, [1, la, [8, 0x2080, 0x2089, range], ppp]);
+  sexp(o, b, a, [1, la, [8, 0x2080, 0x2089, range], la, mo, ppp]);
+}
+function mo(o, b, a) {
+  sexp(o, b, --a, [8, b[a] - 0x2080, r1]);
 }
 function Exp(o, b, a) {
   sexp(o, b, a, [8, 0, Exp_init]);
 }
 function Exp_init(o, b, a) {
   const min_prec = b[--a];
-  sexp(o, b, a, [
-    1, //
-    Atom,
-    [8, min_prec, Exp_next],
-  ]);
+  sexp(o, b, a, [1, Atom, [8, min_prec, Exp_next]]);
 }
 function Exp_next(o, b, a) {
   const min_prec = b[--a];
-  sexp(o, b, a, [
-    1, //
-    Op,
-    [8, min_prec, Exp_init],
-  ]);
+  sexp(o, b, a, [9, Op, r1, [8, min_prec, AAA]]);
+}
+function AAA(o, b, a) {
+  const min_prec = b[--a];
+  const cur_prec = b[a - 1];
+  if (cur_prec < min_prec)
+    sexp(o, b, a, [1, Atom, reduceL, [8, cur_prec, Exp_next]]);
+  else sexp(o, b, a, [1, Atom, reduceR, [8, cur_prec + 1, Exp_next]]);
+}
+function reduceL(o, b, a) {
+  const r = b[--a];
+  const op = b[--a];
+  const l = b[--a];
+  sexp(o, b, a, [8, { op, l, r }, r1]);
+}
+function reduceR(o, b, a) {
+  const r = b[--a];
+  const op = b[--a];
+  const l = b[--a];
+  l.r = { op, l: l.r, r };
+  sexp(o, b, a, [8, l, r1]);
+}
+
+function OpenParen(o, b, a) {
+  sexp(o, b, a, [1, la, [8, 40, eq], ppp]);
+}
+function CloseParen(o, b, a) {
+  sexp(o, b, a, [1, la, [8, 41, eq], ppp]);
 }
 function cp(o, b, a) {
   sexp(o, b, a - 1, [1, la, [8, b[a - 1], eq], ppp]);

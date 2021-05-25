@@ -36,7 +36,7 @@ function mb(o, b, a) {
       p[3].push(nexp);
       p[ray] = mbrays[++pos];
     }
-    (opcode >>= 4), ray++;
+    (opcode >>= 8), ray++;
   }
   Nval(p, b, a);
 }
