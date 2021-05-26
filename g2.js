@@ -1,36 +1,19 @@
 const { sexp, Sexp, Nval, mb } = require("./sexp");
 (function example(o, b, a) {
+  E(o, ["a₀b₀c₀d", 0, 0], 3);
+  E(o, ["a₀b₂c₄d", 0, 0], 3);
   E(o, ["a₄b₂c₈d", 0, 0], 3);
-  //Exp(o, ["a₀b₁c₁d", 0], 2)
-  //Exp(o, ["(a₀b₀c₀d)", 0], 2)
-  //sexp(o, b, a, [1, [8, "a₀b₀c₀d", 0, r1], Exp]);
-  //sexp(o, b, a, [8, 0, 1, 10, fib]);
-  //sexp(o, b, a, [8, 18, 12, gcd]);
-  //sexp(o, b, a, [0, one, two, add, two, add, two, add]);
-})(
-  [
-    (o, b, a) => ((b.length = a), console.log(0, b)),
-    (o, b, a) => ((b.length = a), console.log(1, b)),
-    (o, b, a) => ((b.length = a), console.log(2, b)),
-  ],
-  [],
-  0
-);
-// Exp    = Ei(0)
-// Ei(p)  = A ₁ El(p)
-// El(p)  = O(p) ₁ Ei(p+1) ₁ reduceL ₁ El(p)
-//        ₀ r1
-// O(p)   = la ₁ eq(0x2080+p) ₁ la ₁ mo ₁ ppp
-// A      = Number
-//        ₀ PE
-// PE     = OpenParen ₁ Exp ₁ CloseParen
-
+  E(o, ["a₉b₈c₆d", 0, 0], 3);
+  //  Exp(o, ["a₀b₁c₁d", 0], 2)
+  //  Exp(o, ["(a₀b₀c₀d)", 0], 2)
+  //  sexp(o, b, a, [1, [8, "a₀b₀c₀d", 0, r1], Exp]);
+  //  sexp(o, b, a, [8, 0, 1, 10, fib]);
+  //  sexp(o, b, a, [8, 18, 12, gcd]);
+  //  sexp(o, b, a, [0, one, two, add, two, add, two, add]);
+})(logpith(), [], 0);
 function E(o, b, a) {
   const p = b[--a];
   sexp(o, b, a, [1, A, [8, p, E_]]);
-}
-function laop(o, b, a) {
-  sexp(o, b, a, [1, la, [8, 0x2080, 0x2089, range], la, mo]);
 }
 function E_(o, b, a) {
   const p = b[--a];
@@ -39,15 +22,21 @@ function E_(o, b, a) {
 function E__(o, b, a) {
   const p = b[--a];
   const c = b[--a];
-  if (c < p) sexp(o, b, a, r1);
-  else sexp(o, b, a, [1, ppp, [8, c, c + 1, E], reduceL, [8, p, E_]]);
+  sexp(o, b, a, [
+    9,
+    [8, c, p, lt],
+    [1, ppp, [8, c, c + 1, E], reduceL, [8, p, E_]],
+    r1,
+  ]);
 }
-
 function A(o, b, a) {
   sexp(o, b, a, [0, Number, PE]);
 }
 function PE(o, b, a) {
   sexp(o, b, a, [1, OpenParen, [8, 0, E], CloseParen]);
+}
+function laop(o, b, a) {
+  sexp(o, b, a, [1, la, [8, 0x2080, 0x2089, range], la, [8, 0x2080, sub]]);
 }
 
 // E = E + T / T
@@ -96,7 +85,7 @@ function reduceL(o, b, a) {
   const r = b[--a];
   const op = b[--a];
   const l = b[--a];
-  sexp(o, b, a, [8, { op, l, r }, r1]);
+  sexp(o, b, a, [8, [op, l, r], r1]);
 }
 function reduceR(o, b, a) {
   const r = b[--a];
@@ -188,7 +177,12 @@ function one(o, b, a) {
 function add(o, b, a) {
   const r = b[--a];
   const l = b[--a];
-  sexp(o, b, a, [8, l + r, r0]);
+  sexp(o, b, a, [8, l + r, r1]);
+}
+function sub(o, b, a) {
+  const r = b[--a];
+  const l = b[--a];
+  sexp(o, b, a, [8, l - r, r1]);
 }
 function r0(o, b, a) {
   o[0](o, b, a);
@@ -198,4 +192,20 @@ function r1(o, b, a) {
 }
 function r2(o, b, a) {
   o[2](o, b, a);
+}
+function logpith() {
+  return [
+    (o, b, a) => (
+      (b.length = a),
+      console.log(0, require("util").inspect(b, { colors: true, depth: 7 }))
+    ),
+    (o, b, a) => (
+      (b.length = a),
+      console.log(1, require("util").inspect(b, { colors: true, depth: 7 }))
+    ),
+    (o, b, a) => (
+      (b.length = a),
+      console.log(2, require("util").inspect(b, { colors: true, depth: 7 }))
+    ),
+  ];
 }

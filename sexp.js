@@ -4,8 +4,8 @@ function Nvalsexp(o, b, a, sexp) {
   const oa = a;
   a = Sexp(b, a, sexp);
 
-  //console.log(b.slice(0, a).map(estr).join(" "));
-  console.log(">", rexp(b, a));
+  //  console.log(b.slice(0, a).map(estr).join(" "));
+  // console.log(">", rexp(b, a));
   Nval(o, b, a);
 }
 (function () {
@@ -23,7 +23,12 @@ function Nvalsexp(o, b, a, sexp) {
   function L() {}
   function M() {}
   const rez = [];
-  const input = [0, [1, [2, C, D], A, B], E];
+  const input = [
+    9,
+    [8, A, B, K],
+    [8, B, M],
+    [1, D, [8, E, F, G], H, [8, I, J]],
+  ];
   const len = Sexp(rez, rez.length, input);
   if (len == rez.length) console.log(rez.map(estr).join(" "));
   console.log(rexp(rez, rez.length));

@@ -29,7 +29,7 @@ function mb(o, b, a) {
   let pos = 0;
   const p = [r0, r1, r2, [o]];
   while (opcode) {
-    const len = opcode & 0x0f;
+    const len = opcode & 0xff;
     if (len) {
       const oa = a;
       const nexp = b.slice((a = a - len), oa);
