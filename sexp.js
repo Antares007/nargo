@@ -3,9 +3,8 @@ module.exports = { Sexp, sexp: Nvalsexp, mb, Nval };
 function Nvalsexp(o, b, a, sexp) {
   const oa = a;
   a = Sexp(b, a, sexp);
-
   //  console.log(b.slice(0, a).map(estr).join(" "));
-  // console.log(">", rexp(b, a));
+  //  console.log(">", rexp(b.slice(oa, a), a - oa));
   Nval(o, b, a);
 }
 (function () {

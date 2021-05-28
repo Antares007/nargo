@@ -1,16 +1,27 @@
 const { sexp, Sexp, Nval, mb } = require("./sexp");
 (function example(o, b, a) {
-  E(o, ["a₀b₀c₀d", 0, 0], 3);
-  E(o, ["a₀b₂c₄d", 0, 0], 3);
-  E(o, ["a₄b₂c₈d", 0, 0], 3);
-  E(o, ["a₉b₈c₆d", 0, 0], 3);
-  //  Exp(o, ["a₀b₁c₁d", 0], 2)
-  //  Exp(o, ["(a₀b₀c₀d)", 0], 2)
+  sexp(o, b, a, [8, "a₀b₀c₀d", 0, 0, E]);
+  sexp(o, b, a, [8, "a₀b₂c₄d", 0, 0, E]);
+  sexp(o, b, a, [8, "a₄b₂c₈d", 0, 0, E]);
+  sexp(o, b, a, [8, "a₉b₈c₆d", 0, 0, E]);
   //  sexp(o, b, a, [1, [8, "a₀b₀c₀d", 0, r1], Exp]);
   //  sexp(o, b, a, [8, 0, 1, 10, fib]);
   //  sexp(o, b, a, [8, 18, 12, gcd]);
   //  sexp(o, b, a, [0, one, two, add, two, add, two, add]);
 })(logpith(), [], 0);
+function S(o, b, a) {
+  b[a++] = S;
+  b[a++] = a;
+  b[a++] = 010;
+  b[a++] = mb;
+  b[a++] = b;
+  b[a++] = 01;
+  mb(o, b, a);
+}
+//Identifier = la₁range(0x61,0x63)₁la₁ppp
+// E(p)=A₁E_(p)
+// E_(p)=laop₁E__(p)₀r1
+// E__(c,p)=lt(c,p){ppp₁E(c,c+1)₁reduceL₁E(p) r1}
 function E(o, b, a) {
   const p = b[--a];
   sexp(o, b, a, [1, A, [8, p, E_]]);
@@ -38,63 +49,19 @@ function PE(o, b, a) {
 function laop(o, b, a) {
   sexp(o, b, a, [1, la, [8, 0x2080, 0x2089, range], la, [8, 0x2080, sub]]);
 }
-
-// E = E + T / T
-//
-// E  = T E_
-// E_ = + T E_ / ε
-// T  = F T_
-// T_ = + F T_ / ε
-function Atom(o, b, a) {
-  sexp(o, b, a, [0, Number, PExp]);
-}
 function Number(o, b, a) {
   sexp(o, b, a, [1, la, [8, 0x61, 0x6f, range], la, mn, ppp]);
 }
 function mn(o, b, a) {
   sexp(o, b, --a, [8, String.fromCodePoint(b[a]), r1]);
 }
-function PExp(o, b, a) {
-  sexp(o, b, a, [1, OpenParen, Exp, CloseParen]);
-}
-function Op(o, b, a) {
-  sexp(o, b, a, [1, la, [8, 0x2080, 0x2089, range], la, mo, ppp]);
-}
-function mo(o, b, a) {
-  sexp(o, b, --a, [8, b[a] - 0x2080, r1]);
-}
-function Exp(o, b, a) {
-  sexp(o, b, a, [8, 0, Exp_init]);
-}
-function Exp_init(o, b, a) {
-  const min_prec = b[--a];
-  sexp(o, b, a, [1, Atom, [8, min_prec, Exp_next]]);
-}
-function Exp_next(o, b, a) {
-  const min_prec = b[--a];
-  sexp(o, b, a, [9, Op, r1, [8, min_prec, AAA]]);
-}
-function AAA(o, b, a) {
-  const min_prec = b[--a];
-  const cur_prec = b[a - 1];
-  if (cur_prec < min_prec)
-    sexp(o, b, a, [1, Atom, reduceL, [8, cur_prec, Exp_next]]);
-  else sexp(o, b, a, [1, Atom, reduceR, [8, cur_prec + 1, Exp_next]]);
-}
 function reduceL(o, b, a) {
+  console.log(b.slice(o, a));
   const r = b[--a];
   const op = b[--a];
   const l = b[--a];
   sexp(o, b, a, [8, [op, l, r], r1]);
 }
-function reduceR(o, b, a) {
-  const r = b[--a];
-  const op = b[--a];
-  const l = b[--a];
-  l.r = { op, l: l.r, r };
-  sexp(o, b, a, [8, l, r1]);
-}
-
 function OpenParen(o, b, a) {
   sexp(o, b, a, [1, la, [8, 40, eq], ppp]);
 }
