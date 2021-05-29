@@ -1,21 +1,34 @@
 const { sexp, Sexp, Nval, mb } = require("./sexp");
+let counter = 0;
 (function example(o, b, a) {
+  //sexp(o, b, a, S);
+
   sexp(o, b, a, [8, "a₀b₀c₀d", 0, 0, E]);
-  sexp(o, b, a, [8, "a₀b₂c₄d", 0, 0, E]);
-  sexp(o, b, a, [8, "a₄b₂c₈d", 0, 0, E]);
-  sexp(o, b, a, [8, "a₉b₈c₆d", 0, 0, E]);
-  //  sexp(o, b, a, [1, [8, "a₀b₀c₀d", 0, r1], Exp]);
-  //  sexp(o, b, a, [8, 0, 1, 10, fib]);
-  //  sexp(o, b, a, [8, 18, 12, gcd]);
-  //  sexp(o, b, a, [0, one, two, add, two, add, two, add]);
+  //sexp(o, b, a, [8, "a₀b₂c₄d", 0, 0, E]);
+  //sexp(o, b, a, [8, "a₄b₂c₈d", 0, 0, E]);
+  //sexp(o, b, a, [8, "a₉b₈c₆d", 0, 0, E]);
+  //sexp(o, b, a, [1, [8, "a₀b₀c₀d", 0, r1], Exp]);
+  //sexp(o, b, a, [8, 0, 1, 10, fib]);
+  //sexp(o, b, a, [8, 18, 12, gcd]);
+  //sexp(o, b, a, [0, one, two, add, two, add, two, add]);
 })(logpith(), [], 0);
+function cpa(o, b, a) {
+  o[0](o, b, a);
+}
+function cpb(o, b, a) {
+  o[1](o, b, a);
+}
 function S(o, b, a) {
+  if (4 < counter++) return;
   b[a++] = S;
-  b[a++] = a;
-  b[a++] = 010;
+  b[a++] = cpa;
+  b[a++] = 0x0100;
   b[a++] = mb;
-  b[a++] = b;
-  b[a++] = 01;
+  b[a++] = cpa;
+  b[a++] = 0x0100;
+  b[a++] = mb;
+  b[a++] = cpb;
+  b[a++] = 0x0001;
   mb(o, b, a);
 }
 //Identifier = la₁range(0x61,0x63)₁la₁ppp
@@ -162,17 +175,17 @@ function r2(o, b, a) {
 }
 function logpith() {
   return [
-    (o, b, a) => (
-      (b.length = a),
-      console.log(0, require("util").inspect(b, { colors: true, depth: 7 }))
-    ),
-    (o, b, a) => (
-      (b.length = a),
-      console.log(1, require("util").inspect(b, { colors: true, depth: 7 }))
-    ),
-    (o, b, a) => (
-      (b.length = a),
-      console.log(2, require("util").inspect(b, { colors: true, depth: 7 }))
-    ),
+    function l0(o, b, a) {
+      b.length = a;
+      console.log(0, require("util").inspect(b, { colors: true, depth: 7 }));
+    },
+    function l1(o, b, a) {
+      b.length = a;
+      console.log(1, require("util").inspect(b, { colors: true, depth: 7 }));
+    },
+    function l2(o, b, a) {
+      b.length = a;
+      console.log(2, require("util").inspect(b, { colors: true, depth: 7 }));
+    },
   ];
 }

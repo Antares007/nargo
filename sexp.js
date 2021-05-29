@@ -1,4 +1,4 @@
-const { Nval, mb } = require("./mb");
+const { Nval, mb, estr, rexp } = require("./mb");
 module.exports = { Sexp, sexp: Nvalsexp, mb, Nval };
 function Nvalsexp(o, b, a, sexp) {
   const oa = a;
@@ -60,45 +60,4 @@ function Sexp(b, a, sexp) {
     }
   } else b[a++] = sexp;
   return a;
-}
-function estr(e) {
-  return typeof e === "function"
-    ? e.name
-    : typeof e === "number"
-    ? e.toString(16) + "h"
-    : JSON.stringify(e);
-}
-function rexp(b, a) {
-  if (mb === b[a - 1]) {
-    --a;
-    let opcode = b[--a];
-    let str = "";
-    let ray = 0;
-    let count = 0;
-    while (opcode) {
-      const n = opcode & 0xff;
-      if (n) {
-        const oa = a;
-        const s = b.slice((a = a - n), oa);
-        const p = 1 < n;
-        str =
-          str +
-          String.fromCodePoint(ray + "₀".codePointAt(0)) +
-          (p ? "(" : "") +
-          rexp(s, s.length) +
-          (p ? ")" : "");
-        count++;
-      }
-      opcode >>= 8;
-      ray++;
-    }
-    const q = 1 < count;
-    return rexp(b, a) + (q ? "{" : "") + str + (q ? "}" : "");
-  } else
-    return a === 1
-      ? estr(b[0])
-      : `${estr(b[a - 1])}(${b
-          .slice(0, a - 1)
-          .map(estr)
-          .join(", ")})`;
 }
