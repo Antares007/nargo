@@ -10,7 +10,9 @@ function mbray(o, b, a) {
   Nval(o[3][0], b, a);
 }
 function Nval(o, b, a) {
-  // prettier-ignore
+  //  console.log(b.slice(0, a).map(estr).join(" "));
+  console.log(rexp(b, a) + "\n" + pp(o));
+  //console.log();
   b[--a](o, b, a);
 }
 function f0(o, b, a) {
@@ -37,13 +39,10 @@ function mb(o, b, a) {
     }
     (opcode >>= 8), ray++;
   }
-  console.log(b.slice(0, a).map(estr).join(" "));
-  //console.log(rexp(b, a) + "\n" + pp(p));
-  //console.log();
-  b[--a](p, b, a);
+  Nval(p, b, a);
 }
 function pp(o) {
-  return o.name ? o.name : "[" + o.map(pp).join(" ") + "]";
+  return Array.isArray(o) ? "[" + o.map(pp).join(" ") + "]" : o.name;
 }
 function estr(e) {
   return typeof e === "function"

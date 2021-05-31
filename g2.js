@@ -1,17 +1,30 @@
 const { sexp, Sexp, Nval, mb } = require("./sexp");
 let counter = 0;
-(function example(o, b, a) {
-  //sexp(o, b, a, S);
 
-  sexp(o, b, a, [8, "a₀b₀c₀d", 0, 0, E]);
+`
+one = r1(1) r1(1).
+two = r1(2).
+add a b = r1(a + b).
+tree = one ₁ two ₁ add. 
+tree' = add(1, 2).
+`;
+
+(function example(o, b, a) {
+  const N = G({
+    S: [2, S, [0, [1, S, "a"], "b"]],
+    N: [1, la, [8, 0x61, 0x6f, range], la, [8, 0x61, sub], ppp],
+  });
+  //sexp(o, b, a, S);
+  //sexp(o, b, a, [8, "a₀b₀c₀d", 0, 0, E]);
   //sexp(o, b, a, [8, "a₀b₂c₄d", 0, 0, E]);
-  //sexp(o, b, a, [8, "a₄b₂c₈d", 0, 0, E]);
+  sexp(o, b, a, [8, "a₄b₂c₈d", 0, 0, E]);
   //sexp(o, b, a, [8, "a₉b₈c₆d", 0, 0, E]);
   //sexp(o, b, a, [1, [8, "a₀b₀c₀d", 0, r1], Exp]);
   //sexp(o, b, a, [8, 0, 1, 10, fib]);
   //sexp(o, b, a, [8, 18, 12, gcd]);
   //sexp(o, b, a, [0, one, two, add, two, add, two, add]);
 })(logpith(), [], 0);
+function G(m) {}
 function cpa(o, b, a) {
   o[0](o, b, a);
 }
@@ -41,7 +54,11 @@ function E(o, b, a) {
 }
 function E_(o, b, a) {
   const p = b[--a];
-  sexp(o, b, a, [0, [1, laop, [8, p, E__]], r1]);
+  sexp(o, b, a, [
+    0, //
+    [1, laop, [8, p, E__]],
+    r1,
+  ]);
 }
 function E__(o, b, a) {
   const p = b[--a];
@@ -54,22 +71,36 @@ function E__(o, b, a) {
   ]);
 }
 function A(o, b, a) {
-  sexp(o, b, a, [0, Number, PE]);
+  sexp(o, b, a, [0, Number, azrange, PE]);
 }
 function PE(o, b, a) {
   sexp(o, b, a, [1, OpenParen, [8, 0, E], CloseParen]);
 }
 function laop(o, b, a) {
-  sexp(o, b, a, [1, la, [8, 0x2080, 0x2089, range], la, [8, 0x2080, sub]]);
+  sexp(o, b, a, [
+    1, //
+    la,
+    [8, 0x2080, 0x2089, range],
+    la,
+    [8, 0x2080, sub],
+  ]);
 }
 function Number(o, b, a) {
-  sexp(o, b, a, [1, la, [8, 0x61, 0x6f, range], la, mn, ppp]);
+  sexp(o, b, a, [1, la, [8, 0x30, 0x39, range], la, [8, 0x30, sub], ppp]);
+}
+function azrange(o, b, a) {
+  sexp(o, b, a, [1, la, [8, 0x61, 0x7a, range], la, mn, ppp]);
 }
 function mn(o, b, a) {
   sexp(o, b, --a, [8, String.fromCodePoint(b[a]), r1]);
 }
+function dup(o, b, a) {
+  const amo = b[a - 1];
+  b[a++] = amo;
+  o[1](o, b, a);
+}
 function reduceL(o, b, a) {
-  console.log(b.slice(o, a));
+  //console.log(b.slice(o, a));
   const r = b[--a];
   const op = b[--a];
   const l = b[--a];
