@@ -11,8 +11,8 @@ function mbray(o, b, a) {
 }
 function Nval(o, b, a) {
   //  console.log(b.slice(0, a).map(estr).join(" "));
-  console.log(rexp(b, a) + "\n" + pp(o));
-  //console.log();
+  //  console.log(rexp(b, a));
+  //console.log(pp(o));
   b[--a](o, b, a);
 }
 function f0(o, b, a) {

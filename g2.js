@@ -1,14 +1,12 @@
 const { sexp, Sexp, Nval, mb } = require("./sexp");
 let counter = 0;
-
-`
-one = r1(1) r1(1).
-two = r1(2).
-add a b = r1(a + b).
-tree = one ₁ two ₁ add. 
-tree' = add(1, 2).
-`;
-
+function n21(o, b, a) {}
+function os(o, b, a) {
+  const o21 = o[21];
+  o[21] = n21;
+  b[a++] = 1;
+  o[0](o, b, a);
+}
 (function example(o, b, a) {
   const N = G({
     S: [2, S, [0, [1, S, "a"], "b"]],
@@ -45,9 +43,9 @@ function S(o, b, a) {
   mb(o, b, a);
 }
 //Identifier = la₁range(0x61,0x63)₁la₁ppp
-// E(p)=A₁E_(p)
-// E_(p)=laop₁E__(p)₀r1
-// E__(c,p)=lt(c,p){ppp₁E(c,c+1)₁reduceL₁E(p) r1}
+// E   p    A₁E_(p)
+// E_  p    laop₁E__(p)₀r1
+// E__ c p  lt(c, p){ppp₁E(c,c+1)₁reduceL₁E(p) r1}
 function E(o, b, a) {
   const p = b[--a];
   sexp(o, b, a, [1, A, [8, p, E_]]);
