@@ -1,0 +1,27 @@
+shift b p v           1(v, b, p).
+pop v b p             1(b, p, v).
+dup v v               1(v, v).
+many nar              nar ₁ many(nar).
+lookahead b p         ((p < b.length) | 0)(b, p) ₁ 1(b.codePointAt(p)).
+isIdentifierInit cp   ((cp < 65 ? cp === 36
+                      : cp < 91 ? true
+                      : cp < 97 ? cp === 95
+                      : cp < 123) | 0)().
+isIdentifierNext cp   ((cp < 48 ? cp === 36
+                      : cp < 58 ? true
+                      : cp < 65 ? false
+                      : cp < 91 ? true
+                      : cp < 97 ? cp === 95
+                      : cp < 123) | 0)().
+identifier_init       lookahead ₁ isIdentifierInit ₁ dup ₁ shift.
+identifier_next       lookahead ₁ isIdentifierNext ₁ pop ₁ pos ₁ shift.
+identifier            identifier_init ₁ many(identifier_next).
+param                 identifier ₁ ws.
+params                many(param)
+body                  many(nexp).
+definition            identifier ₁ ws ₁ params ₁ body.
+
+
+nexp_next p                       
+nexp_init
+nexp                  nexp_init ₁ many(0, nexp_next)

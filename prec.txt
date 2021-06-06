@@ -1,0 +1,65 @@
+Operator        Precedence  Associativity   
+( … )           21          n/a             
+… . …           20          left-to-right   
+… [ … ]         20          left-to-right   
+new … ( … )     20          n/a             
+… ( … )         20          left-to-right   
+?.              20          left-to-right   
+new …           19          right-to-left   
+… ++            18          n/a             
+… --            18          n/a             
+! …             17          right-to-left   
+~ …             17          right-to-left   
++ …             17          right-to-left   
+- …             17          right-to-left   
+++ …            17          right-to-left   
+-- …            17          right-to-left   
+typeof …        17          right-to-left   
+void …          17          right-to-left   
+delete …        17          right-to-left   
+await …         17          right-to-left   
+… ** …          16          right-to-left   
+… * …           15          left-to-right   
+… / …           15          left-to-right   
+… % …           15          left-to-right   
+… + …           14          left-to-right   
+… - …           14          left-to-right   
+… << …          13          left-to-right   
+… >> …          13          left-to-right   
+… >>> …         13          left-to-right   
+… < …           12          left-to-right   
+… <= …          12          left-to-right   
+… > …           12          left-to-right   
+… >= …          12          left-to-right   
+… in …          12          left-to-right   
+… instanceof …  12          left-to-right   
+… == …          11          left-to-right   
+… != …          11          left-to-right   
+… === …         11          left-to-right   
+… !== …         11          left-to-right   
+… & …           10          left-to-right   
+… ^ …           9           left-to-right   
+… | …           8           left-to-right   
+… && …          7           left-to-right   
+… || …          6           left-to-right   
+… ?? …          5           left-to-right   
+… ? … : …       4           right-to-left   
+… = …           3           right-to-left   
+… += …          3           right-to-left   
+… -= …          3           right-to-left   
+… **= …         3           right-to-left   
+… *= …          3           right-to-left   
+… /= …          3           right-to-left   
+… %= …          3           right-to-left   
+… <<= …         3           right-to-left   
+… >>= …         3           right-to-left   
+… >>>= …        3           right-to-left   
+… &= …          3           right-to-left   
+… ^= …          3           right-to-left   
+… |= …          3           right-to-left   
+… &&= …         3           right-to-left   
+… ||= …         3           right-to-left   
+… ??= …         3           right-to-left   
+yield …         2           right-to-left   
+yield* …        2           right-to-left   
+… , …           1           left-to-right   

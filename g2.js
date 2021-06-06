@@ -8,44 +8,38 @@ function os(o, b, a) {
   o[0](o, b, a);
 }
 (function example(o, b, a) {
-  const N = G({
-    S: [2, S, [0, [1, S, "a"], "b"]],
-    N: [1, la, [8, 0x61, 0x6f, range], la, [8, 0x61, sub], ppp],
-  });
-  //sexp(o, b, a, S);
-  //sexp(o, b, a, [8, "a₀b₀c₀d", 0, 0, E]);
-  //sexp(o, b, a, [8, "a₀b₂c₄d", 0, 0, E]);
-  sexp(o, b, a, [8, "a₄b₂c₈d", 0, 0, E]);
-  //sexp(o, b, a, [8, "a₉b₈c₆d", 0, 0, E]);
-  //sexp(o, b, a, [1, [8, "a₀b₀c₀d", 0, r1], Exp]);
-  //sexp(o, b, a, [8, 0, 1, 10, fib]);
-  //sexp(o, b, a, [8, 18, 12, gcd]);
-  //sexp(o, b, a, [0, one, two, add, two, add, two, add]);
+  // sexp(o, b, a, [1, [8, "baaaaaaaa", 0, r1], cpb, [8, cpa, many]]);
+  sexp(o, b, a, [8, "a₀b₁c₂d", 0, 0, E]);
+  sexp(o, b, a, [8, "a₂b₁c₀d", 0, 0, E]);
+  sexp(o, b, a, [8, "s₀a₉b₁c₉d₉e₉f", 0, 0, E]);
+  // sexp(o, b, a, [8, "a₉b₈c₆d", 0, 0, E]);
+  // sexp(o, b, a, [1, [8, "a₀b₀c₀d", 0, r1], Exp]);
+  // sexp(o, b, a, [8, 0, 1, 10, fib]);
+  // sexp(o, b, a, [8, 18, 12, gcd]);
+  // sexp(o, b, a, [0, one, two, add, two, add, two, add]);
 })(logpith(), [], 0);
-function G(m) {}
+function many(o, b, a) {
+  const nar = b[--a];
+  sexp(o, b, a, [1, nar, [8, nar, many]]);
+}
 function cpa(o, b, a) {
-  o[0](o, b, a);
+  sexp(o, b, a, [1, la, [8, 0x61, eq], ppp]);
 }
 function cpb(o, b, a) {
-  o[1](o, b, a);
+  sexp(o, b, a, [1, la, [8, 0x62, eq], ppp]);
 }
-function S(o, b, a) {
-  if (4 < counter++) return;
-  b[a++] = S;
-  b[a++] = cpa;
-  b[a++] = 0x0100;
-  b[a++] = mb;
-  b[a++] = cpa;
-  b[a++] = 0x0100;
-  b[a++] = mb;
-  b[a++] = cpb;
-  b[a++] = 0x0001;
-  mb(o, b, a);
-}
-//Identifier = la₁range(0x61,0x63)₁la₁ppp
-// E   p    A₁E_(p)
-// E_  p    laop₁E__(p)₀r1
-// E__ c p  lt(c, p){ppp₁E(c,c+1)₁reduceL₁E(p) r1}
+//Identifier = la₁range(0x61,0x63)₁la₁ppp.
+//
+//Number    la ₁ range(0x30, 0x39) ₁ la ₁ sub(0x30) ₁  ppp.
+//laop      la ₁ range(0x2080, 0x2089) ₁ la ₁ sub(0x2080).
+//azrange   la ₁ range(0x61,0x7a) ₁ la ₁ mn ₁ ppp.
+//mn cp     1(String.fromCodePoint(cp)).
+//
+//E   p     A₁E_(p).
+//E_  p     laop₁E__(p)₀r1.
+//E__ c p   lt(c, p){ppp₁E(c,c+1)₁reduceL₁E(p) r1}.
+//A         Number ₁ azrange ₁ PE.
+//PE        OpenParen ₁ E(0) ₁ CloseParen.
 function E(o, b, a) {
   const p = b[--a];
   sexp(o, b, a, [1, A, [8, p, E_]]);
@@ -62,10 +56,20 @@ function E__(o, b, a) {
   const p = b[--a];
   const c = b[--a];
   sexp(o, b, a, [
-    9,
+    0,
     [8, c, p, lt],
-    [1, ppp, [8, c, c + 1, E], reduceL, [8, p, E_]],
-    r1,
+    [
+      1,
+      ppp,
+      [
+        9, //
+        [8, c, 9, eq],
+        [8, c, c + 1, E],
+        [8, c, c, E],
+      ],
+      reduceL,
+      [8, p, E_],
+    ],
   ]);
 }
 function A(o, b, a) {
@@ -116,6 +120,7 @@ function cp(o, b, a) {
 function cpr(o, b, a) {
   sexp(o, b, a - 2, [1, la, [8, b[a - 2], b[a - 1], range], ppp]);
 }
+// ppp b:0 p:1 b p
 function ppp(o, b, a) {
   const ray = (b[1] < b[0].length) | 0;
   if (ray) b[1]++, o[ray](o, b, a);
