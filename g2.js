@@ -7,15 +7,39 @@ function os(o, b, a) {
   b[a++] = 1;
   o[0](o, b, a);
 }
+function laeq61ppp(o, b, a) {
+  sexp(o, b, a, [1, la, [8, 61, eq], ppp]);
+}
+function e3(o, b, a) {
+  sexp(o, b, a, [8, "===", r1]);
+}
+function e2(o, b, a) {
+  sexp(o, b, a, [8, "==", r1]);
+}
+function e1(o, b, a) {
+  sexp(o, b, a, [8, "=", r1]);
+}
+function teq(o, b, a) {
+  sexp(o, b, a, [
+    1,
+    laeq61ppp,
+    [0, [1, laeq61ppp, [0, [1, laeq61ppp, e3], e2]], e1],
+  ]);
+}
 (function example(o, b, a) {
-  // sexp(o, b, a, [1, [8, "baaaaaaaa", 0, r1], cpb, [8, cpa, many]]);
-  sexp(o, b, a, [8, "a₀b₁c₂d", 0, 0, E]);
-  sexp(o, b, a, [8, "a₂b₁c₀d", 0, 0, E]);
-  sexp(o, b, a, [8, "s₀a₉b₁c₉d₉e₉f", 0, 0, E]);
+  sexp(o, b, a, [1, [8, "===1", 0, r1], teq]);
+  sexp(o, b, a, [1, [8, "1===", 0, r1], teq]);
+  sexp(o, b, a, [1, [8, "=1==", 0, r1], teq]);
+  sexp(o, b, a, [1, [8, "==1=", 0, r1], teq]);
+  //sexp(o, b, a, [1, [8, "baaaaaaaa", 0, r1], cpb, [8, cpa, many]]);
+  //sexp(o, b, a, [8, "a₀b₀c₀d", 0, 0, E]);
+  // sexp(o, b, a, [8, "a₀b₁c₂d", 0, 0, E]);
+  // sexp(o, b, a, [8, "a₂b₁c₀d", 0, 0, E]);
+  // sexp(o, b, a, [8, "s₀a₉b₁c₉d₉e₉f", 0, 0, E]);
   // sexp(o, b, a, [8, "a₉b₈c₆d", 0, 0, E]);
   // sexp(o, b, a, [1, [8, "a₀b₀c₀d", 0, r1], Exp]);
-  // sexp(o, b, a, [8, 0, 1, 10, fib]);
-  // sexp(o, b, a, [8, 18, 12, gcd]);
+  //sexp(o, b, a, [8, 0, 1, 10, fib]);
+  //sexp(o, b, a, [8, 18, 12, gcd]);
   // sexp(o, b, a, [0, one, two, add, two, add, two, add]);
 })(logpith(), [], 0);
 function many(o, b, a) {

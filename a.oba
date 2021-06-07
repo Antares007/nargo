@@ -1,27 +1,51 @@
-shift b p v           1(v, b, p).
-pop v b p             1(b, p, v).
-dup v v               1(v, v).
-many nar              nar ₁ many(nar).
-lookahead b p         ((p < b.length) | 0)(b, p) ₁ 1(b.codePointAt(p)).
-isIdentifierInit cp   ((cp < 65 ? cp === 36
-                      : cp < 91 ? true
-                      : cp < 97 ? cp === 95
-                      : cp < 123) | 0)().
-isIdentifierNext cp   ((cp < 48 ? cp === 36
-                      : cp < 58 ? true
-                      : cp < 65 ? false
-                      : cp < 91 ? true
-                      : cp < 97 ? cp === 95
-                      : cp < 123) | 0)().
-identifier_init       lookahead ₁ isIdentifierInit ₁ dup ₁ shift.
-identifier_next       lookahead ₁ isIdentifierNext ₁ pop ₁ pos ₁ shift.
-identifier            identifier_init ₁ many(identifier_next).
-param                 identifier ₁ ws.
-params                many(param)
-body                  many(nexp).
-definition            identifier ₁ ws ₁ params ₁ body.
+shift b p v = .[1](v, b, p);
+lookahead b p = p < b.length ? .[1](b, p, b.codePointAt(p)) : .[0](b, p);
 
+isnscp cp = .[(cp < 65 ? cp === 36
+             : cp < 91 ? true
+             : cp < 97 ? cp === 95
+             : cp < 123) | 0]();
+isnncp cp = .[(cp < 48 ? cp === 36
+             : cp < 58 ? true
+             : cp < 65 ? false
+             : cp < 91 ? true
+             : cp < 97 ? cp === 95
+             : cp < 123) | 0]();
+name_init = lookahead ₁ isnscp ₁ shift.
+name_next = lookahead ₁ isnncp ₁ shift.
+name = name_init ₁ many(name_next).
 
-nexp_next p                       
-nexp_init
-nexp                  nexp_init ₁ many(0, nexp_next)
+example ...head .[0](); example(., head, head.length);
+
+op =  equals
+      ₁ (equals
+        ₁ (equals
+          ₁ ₁(===) ₀ ₁(==))
+          ₀ ₁(=))
+
+junction_init cp       cp < 0x2080 || 0x2089 < cp ? .[1](cp) : .[0]();
+junction               la ₁ junction_init. 
+nexp_next = junction and nexp_init.
+nexp_init = number, string or name.
+nexp = nexp_init ₁ many(nexp_next).
+
+ε = .and();
+d = la, eq(46) and shift.
+ddd = d, d and d.
+equals = la, eq(61), shift.
+nargo = name, (ddd or ε), many(name), equals and many(nexp).
+
+add a b = .and(a + b)
+one = .and(1);
+two = .and(2);
+seven = one, two, two, two, add, add and add.
+seven(require('./or_and_log_pith.oba'))
+
+and ...params = console.log(params);
+or ...params = console.log(params);
+
+//შეკრიბე ა ბ = .და(ა+ბ);
+//ერთი = .და(1);
+//ორი = .და(2);
+//შვიდი = ერთი, ორი, ორი, ორი, შეკრიბე, შეკრიბე და შეკრიბე.
+

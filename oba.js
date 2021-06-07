@@ -1,5 +1,5 @@
-button d l    text(l).  (0 < d | 0)() ₁ element(d - 1, counter).
-counter d s   element(d, '+', button).  element(d, '-', button).  text('0').
+button d l    text(l). (0 < d | 0)() ₁ element(d - 1, counter).
+counter d s   element(d, '+', button). element(d, '-', button). text('0').
 shift p       1(p + 1).
 cps           cp ₁ shift
 
@@ -16,8 +16,8 @@ three'        daumate(1, 2).
 text text
 
 gcd x y
-  (x < y | 0)() ₁ gcd(x, y - x)
-₀ (y < x | 0)() ₁ gcd(x - y, y)
+  ((x < y) | 0)() ₁ gcd(x, y - x)
+₀ ((y < x) | 0)() ₁ gcd(x - y, y)
 ₀ 1(x).
 
 eq l r          ((l===r)|0)().
