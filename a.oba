@@ -1,40 +1,86 @@
-shift b p v = .[1](v, b, p);
-lookahead b p = p < b.length ? .[1](b, p, b.codePointAt(p)) : .[0](b, p);
+მთავარი           =       ვიდეო({და,ან}); შვიდი({და});
+                                ფიბონაჩი({და},45);
+         ფიბონაჩი ნ
+              =
+  ფიბონაჩისრეკურსია(ნ, 0, 1).
+შვიდი =
+  ერთი,
+  ორი, ორი, ორი,
+  შეკრიბე, შეკრიბე და შეკრიბე.          ერთი
+                                          =
+                                       .და(1);
+                შეკრიბე ა ბ
+                    =
+              .და(ა + ბ);
+        ორი = ერთი, ერთი და შეკრიბე.
 
-isnscp cp = .[(cp < 65 ? cp === 36
-             : cp < 91 ? true
-             : cp < 97 ? cp === 95
-             : cp < 123) | 0]();
-isnncp cp = .[(cp < 48 ? cp === 36
-             : cp < 58 ? true
-             : cp < 65 ? false
-             : cp < 91 ? true
-             : cp < 97 ? cp === 95
-             : cp < 123) | 0]();
-name_init = lookahead ₁ isnscp ₁ shift.
-name_next = lookahead ₁ isnncp ₁ shift.
-name = name_init ₁ many(name_next).
+ფიბონაჩისრეკურსია ნ წ ა  = ნ > 0
+                ? ფიბონაჩისრეკურსია(ნ - 1, ა, წ + ა)
+                : .და(წ, ა);
 
-example ...head .[0](); example(., head, head.length);
+ნარგო1 = ერთი. ერთი(); ერთი. ერთი(.); .ერთი(); ერთი.
+ნარგო2 ნარ = .და(7,9); .ან(5,6); ნარ. ნარ(.); ნარ(.,0,0,0); .და(2, 3);
+ვიდეო = ნარგო2({ ., ერთი}, ნარგო1); .და("ვიდეო გულგულზე");
 
-op =  equals
-      ₁ (equals
-        ₁ (equals
-          ₁ ₁(===) ₀ ₁(==))
-          ₀ ₁(=))
+და ...args = console.log('და', ...args);
+ან ...args = console.log('ან', ...args);
 
-junction_init cp       cp < 0x2080 || 0x2089 < cp ? .[1](cp) : .[0]();
-junction               la ₁ junction_init. 
-nexp_next = junction and nexp_init.
-nexp_init = number, string or name.
-nexp = nexp_init ₁ many(nexp_next).
+გასაკეთებელი = 
+  ვიდეოს ჩაწერა.
 
-ε = .and();
-d = la, eq(46) and shift.
-ddd = d, d and d.
-equals = la, eq(61), shift.
-nargo = name, (ddd or ε), many(name), equals and many(nexp).
+შიფტ სანახი = .და(სანახი + 1);
+დბ ანდერძი საწყისი სანახი = სანახი < ანდერძი
+            ? .და(ანდერძი, საწყისი, სანახი, საწყისი[სანახი])
+            : .ან(ანდერძი, საწყისი, სანახი);
 
+ზემოთნაჩვენები სიტყვის განსაზღვრების გამოსახულება ჯავასკრიპტში შემდეგნაირად გამოიყურება:
+  function დბjs(o, begin, advance) {
+    begin[advance - 1] < begin[advance - 2].length
+    ? begin[advance] = begin[advance - 2][begin[advance]], o.და(o, begin, advance + 1)
+    : o.ან(o, begin, advance);
+  }
+
+სიტყვა = .და([.და, .ან, დბ, შიფტ]);
+
+offset <= buf.length - 4
+
+სდბ სანახი  = .და(სანახი + 1);
+სდს სანახი  = .და(სანახი + 2);
+სდ2ს სანახი = .და(სანახი + 4);
+სდ4ს სანახი = .და(სანახი + 8);
+სდ4ს სანახი = .და(სანახი + 8);
+აბა დამაცადე.
+isnscp cp         = (cp < 65 ? cp === 36
+                   : cp < 91 ? true : cp < 97 ? cp === 95 : cp < 123) 
+                  ? .and()
+                  : .or();
+isnncp cp         = (cp < 48 ? cp === 36 : cp < 58 ? true : cp < 65 ? false
+                   : cp < 91 ? true : cp < 97 ? cp === 95 : cp < 123)
+                  ? .and()
+                  : .or();
+name_init         = lookahead, isnscp and შიფტ.
+name_next         = lookahead, isnncp and შიფტ.
+name              = name_init and many(name_next).
+
+junction_init cp  = cp < 0x2080 || 0x2089 < cp ? .[1](cp) : .[0]();
+junction          = la ₁ junction_init. 
+nexp_next         = junction and nexp_init.
+nexp_init         = number, string or name.
+nexp              = nexp_init ₁ many(nexp_next).
+
+ε                 = .and();
+წერტილი
+d                 = ab, eb(46) and sb.
+ddd               = d, d and d.
+equals            = la, eq(61), შიფტ.
+nargo             = name, (ddd or ε), many(name), equals and many(nexp).
+
+op                = equals ₁ (equals ₁ (equals ₁ ₁(===) ₀ ₁(==)) ₀ ₁(=))
+
+// შეკრიბე ა ბ = .და(ა+ბ);
+// ერთი = .და(1);
+// ორი = .და(2);
+// შვიდი = ერთი, ორი, ორი, ორი, შეკრიბე, შეკრიბე და შეკრიბე.
 add a b = .and(a + b)
 one = .and(1);
 two = .and(2);
@@ -44,8 +90,5 @@ seven(require('./or_and_log_pith.oba'))
 and ...params = console.log(params);
 or ...params = console.log(params);
 
-//შეკრიბე ა ბ = .და(ა+ბ);
-//ერთი = .და(1);
-//ორი = .და(2);
-//შვიდი = ერთი, ორი, ორი, ორი, შეკრიბე, შეკრიბე და შეკრიბე.
 
+example ...head .[0](); example(., head, head.length);
