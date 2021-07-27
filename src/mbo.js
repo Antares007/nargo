@@ -9,8 +9,8 @@ function me(o, a, b) {
 }
 
 const o = {
-  v(o, [...nargs], [...bargs]) {
-    console.log("v", nargs, bargs);
+  v(o, ...nargs) {
+    console.log("v", nargs);
   },
   e(o, ...nargs) {
     console.log("e", nargs);
@@ -49,7 +49,7 @@ function example(o) {
   /**/ C(mb, o, M, (o) => C(mb, o, f, g)); /******/
   /*************************************************/
 }
-//example(o, [], 0, [], 0);
+//example(o, [], 0);
 
 function rg(o, a, b, c, d) {
   if (a === mb) C(c, o, a, d, rg, d, mb, b);
