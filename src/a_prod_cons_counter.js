@@ -16,19 +16,23 @@ function gor(c) {
 function god(c) {
   c.s[1](c);
 }
-function dot(c) {}
+function nop() {}
+function dot(c) {
+  c.o.push(nop), and(c);
+}
 
 function prod_or(c) {
   const { o, s } = c;
   const oσ = o.pop();
-  o.push(c, gor, oσ, 3, prom, dot, and), o.pop()(c);
+  console.log("prod_or");
+  o.push(c, gor, oσ, 3, prom), dot(c);
 }
 function prod_and(c) {
   const { o, s } = c;
   const oσ = o.pop();
   const i = o.pop();
   if (i % 10_000_000 === 0) console.log(i);
-  o.push(i + 1, c, god, oσ, 3, prom, dot, and), o.pop()(c);
+  o.push(i + 1, c, god, oσ, 3, prom), dot(c);
 }
 function prod_not(c) {}
 function prod(c) {
@@ -39,14 +43,15 @@ function prod(c) {
 function cons_or(c) {
   const { o, s } = c;
   const oσ = o.pop();
-  o.push(c, god, oσ, 3, prom, dot, and), o.pop()(c);
+  console.log("cons_or");
+  o.push(c, god, oσ, 3, prom), dot(c);
 }
 function cons_and(c) {
   const { o, s } = c;
   const oσ = o.pop();
   const i = o.pop();
   if (i % 10_000_000 === 1) console.log(i);
-  o.push(i + 1, c, god, oσ, 3, prom, dot, and), o.pop()(c);
+  o.push(i + 1, c, god, oσ, 3, prom), dot(c);
 }
 function cons_not(c) {}
 function cons(c) {

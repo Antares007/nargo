@@ -1,3 +1,4 @@
+const { not, and, or } = require("./aradani");
 console.log("ok");
 function onclick(o, event, delta, depth) {
   C(o.setState, { n: o.state.n + delta });
